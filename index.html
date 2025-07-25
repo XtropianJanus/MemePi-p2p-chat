@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemePi P2P Chat - Full Features & Buy MEMEPI</title>
+    <!-- Favicon - Recommended, replace with your actual MemePi favicon -->
+    <!-- <link rel="icon" href="images/memepi-favicon.png" type="image/png"> -->
+    
+    <!-- PWA Manifest Link -->
+    <!-- IMPORTANT: For Vercel, paths should be relative to root: /manifest.json -->
+    <link rel="manifest" href="/manifest.json"> 
+
+    <style>
+        /* --- Global & Body Styling --- */
+        :root {
+            /* Theme Colors derived from MemePi Logo */
+            --memepi-purple: #A08CE5;
+            --memepi-purple-dark: #8C7AD0;
+            --token-yellow: #FFEB3B;
+            --token-yellow-dark: #D4AC00;
+            --success-green: #4CAF50;
+            --success-green-dark: #45a049;
+            --light-bg: #F8F8F8;
+            --lighter-bg: #FDFDFD;
+            --text-color: #333;
+            --secondary-text-color: #555;
+            --border-color: #eee;
+            --message-bg-other: #EBE0FF; /* Light purple from MemePi */
+            --message-bg-self: #FFF9C4; /* Light yellow from TOKEN */
+            --message-text-other: #6A4D9F; /* Darker purple */
+            --message-text-self: #D4AC00; /* Darker yellow */
+            --ai-bot-bg: #CCEEFF; /* Light blue for AI messages */
+            --ai-bot-text: #006064; /* Dark teal for AI text */
+            --error-red: #FF4444; /* For error messages / disabled states */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, var(--light-bg), #E0F7FA, var(--light-bg));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite alternate;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- Keyframe Animations --- */
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes typingDots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+
+        /* --- Header & Logo --- */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #logo-img {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        h1 {
+            color: var(--memepi-purple);
+            margin-top: 0;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+            letter-spacing: 1px;
+        }
+        #app-container {
+            max-width: 900px;
+            margin: 0 auto; /* Centers the app container on desktop */
+            background-color: var(--lighter-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* --- Authentication Section --- */
+        #auth-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+            gap: 10px;
+            align-items: flex-end;
+            background-color: var(--lighter-bg);
+        }
+        #auth-section input {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            flex-grow: 1;
+            min-width: 120px; /* Ensures inputs don't get too small */
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #auth-section input:focus {
+            outline: none;
+            border-color: var(--memepi-purple);
+            box-shadow: 0 0 0 3px rgba(var(--memepi-purple), 0.2);
+        }
+        #auth-section button {
+            padding: 12px 20px;
+            background-color: var(--memepi-purple);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            white-space: nowrap;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        #auth-section button:hover { background-color: var(--memepi-purple-dark); transform: translateY(-1px); }
+        #auth-section button:active { transform: translateY(0); }
+        #auth-status {
+            margin-left: auto;
+            padding: 10px 15px;
+            background-color: #E6F7F5;
+            border-radius: 8px;
+            font-weight: bold;
+            white-space: nowrap;
+            color: var(--success-green);
+        }
+
+        /* --- Wallet Section --- */
+        #wallet-section {
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--lighter-bg);
+            display: flex;
+            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+        }
+        #wallet-info {
+            flex-grow: 1;
+        }
+        #wallet-address {
+            font-weight: bold;
+            color: var(--memepi-purple);
+            word-break: break-all; /* Prevents long addresses from overflowing */
+        }
+        #memepi-balance {
+            font-weight: bold;
+            color: var(--token-yellow-dark);
+        }
+        #connect-wallet-button, #buy-memepi-button { /* Added buy button */
+            padding: 8px 15px;
+            background-color: var(--token-yellow);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        #connect-wallet-button:hover, #buy-memepi-button:hover { background-color: #FFD700; transform: translateY(-1px); }
+        #connect-wallet-button:active, #buy-memepi-button:active { transform: translateY(0); }
+        #connect-wallet-button:disabled, #buy-memepi-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* --- AI Bot Toggle --- */
+        #ai-bot-toggle-section {
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--lighter-bg);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+        }
+        #ai-bot-toggle-section label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        #ai-bot-toggle {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+
+        /* --- Main Chat Layout --- */
+        #main-chat-layout {
+            display: flex; /* Desktop: sidebar and chat area side-by-side */
+            flex-grow: 1;
+        }
+        #sidebar {
+            width: 200px; /* Fixed width for sidebar on desktop */
+            border-right: 1px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-bg);
+        }
+        #chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Room Selection --- */
+        #room-selection h3 { color: var(--memepi-purple); margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        #room-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        #room-list li {
+            padding: 10px 5px;
+            cursor: pointer;
+            color: var(--secondary-text-color);
+            font-weight: bold;
+            transition: color 0.2s ease, border-left 0.2s ease, background-color 0.2s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #room-list li:hover {
+            color: var(--memepi-purple);
+            background-color: rgba(var(--memepi-purple), 0.05);
+        }
+        #room-list li.active {
+            color: var(--memepi-purple);
+            border-left: 3px solid var(--memepi-purple);
+            padding-left: 5px;
+            background-color: rgba(var(--memepi-purple), 0.1);
+        }
+        .locked-room {
+            color: var(--error-red) !important;
+            cursor: not-allowed !important;
+            background-color: rgba(var(--error-red), 0.05) !important;
+        }
+        .locked-room:hover {
+            color: var(--error-red) !important;
+            background-color: rgba(var(--error-red), 0.1) !important;
+        }
+        .locked-room .lock-icon {
+            margin-left: 5px;
+            font-size: 0.8em;
+            color: var(--error-red);
+        }
+        .inactive-room {
+            color: #999 !important;
+            font-style: italic;
+            text-decoration: line-through;
+        }
+        .inactive-room .lock-icon {
+            color: #999 !important;
+        }
+        /* Room creation button */
+        #create-room-button {
+            display: block;
+            width: calc(100% - 10px);
+            padding: 10px;
+            margin-top: 10px;
+            background-color: var(--success-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        #create-room-button:hover { background-color: var(--success-green-dark); transform: translateY(-1px); }
+        #create-room-button:active { transform: translateY(0); }
+
+
+        /* --- User List --- */
+        #online-users h3 { color: var(--memepi-purple); margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        #user-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        #user-list li {
+            padding: 8px 0;
+            color: var(--secondary-text-color);
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease, background-color 0.2s ease;
+        }
+        #user-list li:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        .online-dot, .offline-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .online-dot { background-color: var(--success-green); }
+        .offline-dot { background-color: #ccc; }
+
+        /* --- Typing Indicators --- */
+        #typing-indicator {
+            min-height: 20px;
+            font-style: italic;
+            color: var(--secondary-text-color);
+            padding: 5px 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            border-top: 1px solid var(--border-color);
+        }
+        #typing-indicator.active { opacity: 1; }
+        #typing-indicator::after {
+            content: ".";
+            animation: typingDots 1.5s infinite steps(1);
+            display: inline-block;
+            overflow: hidden;
+            width: 1em;
+        }
+        #typing-indicator:not(.active)::after {
+            content: "";
+        }
+
+        /* --- Messages Display --- */
+        #messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            background-color: var(--message-bg-other);
+            word-wrap: break-word;
+            position: relative;
+            line-height: 1.4;
+            max-width: 80%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            animation: fadeInSlideUp 0.3s ease-out;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .message strong { color: var(--message-text-other); }
+        .message .timestamp {
+            font-size: 0.7em;
+            color: #888;
+            margin-left: 10px;
+        }
+        .message-content {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .message.my-message .message-content {
+            text-align: right;
+        }
+        .message.my-message {
+            background-color: var(--message-bg-self);
+            text-align: right;
+            margin-left: auto;
+            margin-right: 0;
+            flex-direction: row-reverse;
+        }
+        .message.my-message strong { color: var(--message-text-self); }
+        .message.my-message .timestamp { left: auto; right: 8px; }
+
+        /* AI Bot Message Styling */
+        .message.ai-bot-message {
+            background-color: var(--ai-bot-bg);
+            color: var(--ai-bot-text);
+            text-align: left;
+            margin-right: auto;
+            margin-left: 0;
+            flex-direction: row;
+        }
+        .message.ai-bot-message strong {
+            color: var(--ai-bot-text);
+        }
+
+        /* Tip button inside message */
+        .tip-button {
+            background-color: var(--token-yellow);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            padding: 4px 8px;
+            font-size: 0.7em;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+        .tip-button:hover { background-color: #FFD700; }
+        .message.my-message .tip-button { margin-left: 0; margin-right: 10px; }
+
+        /* --- Input Area --- */
+        #input-area {
+            padding: 15px;
+            display: flex;
+            border-top: 1px solid var(--border-color);
+        }
+        #message-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-right: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #message-input:focus {
+            outline: none;
+            border-color: var(--success-green);
+            box-shadow: 0 0 0 3px rgba(var(--success-green), 0.2);
+        }
+        #message-input::placeholder {
+            color: #aaa;
+            opacity: 1;
+            transition: color 0.3s ease;
+        }
+        #message-input:focus::placeholder {
+            color: transparent;
+        }
+        #send-button {
+            padding: 12px 20px;
+            background-color: var(--success-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        #send-button:hover { background-color: var(--success-green-dark); transform: translateY(-1px); }
+        #send-button:active { transform: translateY(0); }
+        #send-button:disabled, #message-input:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* --- Modals (for Tipping & Create Room) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-content h3 {
+            color: var(--memepi-purple);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .modal-content input {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+        }
+        .modal-content button.confirm-button {
+            background-color: var(--success-green);
+            color: white;
+        }
+        .modal-content button.confirm-button:hover { background-color: var(--success-green-dark); }
+        .modal-content button.cancel-button {
+            background-color: #f44336;
+            color: white;
+        }
+        .modal-content button.cancel-button:hover { background-color: #da190b; }
+        .modal-message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+
+        /* --- Responsive Adjustments --- */
+        /* This media query applies styles when the screen width is 768px or less (typical for tablets and phones) */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px; /* Reduce overall padding on smaller screens */
+            }
+            #app-container {
+                border-radius: 0; /* Make corners less rounded or sharp on mobile */
+                box-shadow: none; /* Reduce heavy shadows on mobile */
+            }
+            h1 {
+                font-size: 2em; /* Smaller heading on mobile */
+            }
+
+            /* Main chat layout: stack sidebar and chat area vertically */
+            #main-chat-layout {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%; /* Sidebar takes full width */
+                border-right: none; /* Remove right border */
+                border-bottom: 1px solid var(--border-color); /* Add bottom border */
+                flex-direction: row; /* Layout rooms and users horizontally in sidebar */
+                justify-content: space-around;
+                flex-wrap: wrap; /* Allow room/user lists to wrap */
+                padding: 10px; /* Adjust sidebar padding */
+            }
+            #room-selection, #online-users {
+                flex: 1; /* Allow these sections to grow/shrink */
+                min-width: 150px; /* Minimum width for each section */
+                margin-bottom: 10px; /* Add some spacing between sections */
+            }
+            #room-list, #user-list {
+                display: flex; /* Make lists horizontal */
+                flex-wrap: wrap; /* Allow list items to wrap */
+                gap: 5px 10px; /* Spacing between list items */
+                margin-bottom: 0; /* Remove bottom margin from room-list */
+            }
+            #room-list li, #user-list li {
+                padding: 5px; /* Smaller padding for list items */
+                border-left: none !important; /* Remove left border */
+                border-bottom: 3px solid transparent; /* Use bottom border for active room */
+            }
+            #room-list li.active {
+                border-bottom: 3px solid var(--memepi-purple) !important;
+                padding-bottom: 2px !important; /* Adjust padding for bottom border */
+            }
+            #create-room-button {
+                width: 100%; /* Full width button */
+            }
+
+            /* Authentication and Wallet sections: stack inputs/buttons vertically */
+            #auth-section {
+                flex-direction: column;
+                align-items: stretch; /* Stretch items to full width */
+            }
+            #auth-status {
+                margin-left: 0; /* Remove auto margin */
+                text-align: center; /* Center text */
+            }
+            #auth-section button, #auth-section input {
+                width: 100%; /* Full width for inputs and buttons */
+            }
+            #wallet-section {
+                flex-direction: column; /* Stack wallet info and buttons vertically */
+                align-items: stretch;
+            }
+            #wallet-info {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            #connect-wallet-button, #buy-memepi-button {
+                width: 100%; /* Full width for wallet buttons */
+            }
+            #ai-bot-toggle-section {
+                justify-content: center; /* Center the toggle on mobile */
+            }
+            
+            /* Message input area adjustments */
+            #input-area {
+                padding: 10px; /* Smaller padding */
+            }
+            #message-input {
+                margin-right: 5px; /* Smaller margin to send button */
+            }
+            #send-button {
+                padding: 10px 15px; /* Smaller send button */
+            }
+
+            /* Message bubble maximum width */
+            .message {
+                max-width: 95%; /* Messages can take more width on small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Your Logo Image -->
+        <!-- IMPORTANT: Replace the src with the actual URL where you host your MemePi logo -->
+        <img id="logo-img" src="images/memepi-logo.png" alt="MemePi Token Logo">
+        <h1>MemePi P2P Chat</h1>
+    </header>
+
+    <div id="app-container">
+        <!-- Authentication Section -->
+        <div id="auth-section">
+            <input type="text" id="auth-username" placeholder="Username">
+            <input type="password" id="auth-password" placeholder="Password">
+            <button id="signup-button">Sign Up</button>
+            <button id="login-button">Log In</button>
+            <span id="auth-status">Not Logged In</span>
+        </div>
+
+        <!-- Wallet Connection Section -->
+        <div id="wallet-section">
+            <div id="wallet-info">
+                Wallet: <span id="wallet-address">Not Connected</span><br>
+                MEMEPI Balance: <span id="memepi-balance">0.00</span>
+            </div>
+            <button id="connect-wallet-button">Connect Wallet</button>
+            <button id="buy-memepi-button">Buy MEMEPI</button>
+        </div>
+
+        <!-- AI Bot Toggle Section -->
+        <div id="ai-bot-toggle-section">
+            <label for="ai-bot-toggle">
+                <input type="checkbox" id="ai-bot-toggle">
+                Activate MemePi Oracle Bot
+            </label>
+        </div>
+
+        <div id="main-chat-layout">
+            <!-- Sidebar for Rooms and Users -->
+            <div id="sidebar">
+                <div id="room-selection">
+                    <h3>Rooms</h3>
+                    <ul id="room-list">
+                        <!-- Rooms will be dynamically loaded here -->
+                    </ul>
+                    <button id="create-room-button">Create New Room</button>
+                </div>
+                <div id="online-users">
+                    <h3>Online Users</h3>
+                    <ul id="user-list">
+                        <!-- Online users will appear here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div id="chat-area">
+                <div id="messages">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div id="typing-indicator"></div>
+                <div id="input-area">
+                    <input type="text" id="message-input" placeholder="Type your message..." autofocus disabled>
+                    <button id="send-button" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Tip Modal -->
+    <div id="tipModal" class="modal">
+        <div class="modal-content">
+            <h3>Send MEMEPI Tip</h3>
+            <p>Tipping <span id="tipRecipientAlias"></span></p>
+            <input type="number" id="tipAmountInput" placeholder="Amount (MEMEPI)" step="0.01" min="0.01">
+            <div class="modal-message" id="tipMessage"></div>
+            <button class="confirm-button" id="confirmTipButton">Confirm Tip</button>
+            <button class="cancel-button" id="cancelTipButton">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div id="createRoomModal" class="modal">
+        <div class="modal-content">
+            <h3>Create New Chat Room</h3>
+            <input type="text" id="newRoomNameInput" placeholder="Enter room name (e.g., my-new-room)">
+            <div class="modal-message" id="createRoomMessage"></div>
+            <button class="confirm-button" id="confirmCreateRoomButton">Create Room</button>
+            <button class="cancel-button" id="cancelCreateRoomButton">Cancel</button>
+        </div>
+    </div>
+
+
+    <!-- Include Ethers.js (before your main script) -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
+
+    <!-- Include Gun.js and SEA library -->
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/not.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/webrtc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun-indexeddb/gun-indexeddb.js"></script>
+
+    <script>
+        // --- Global Constants & Configurations ---
+        // IMPORTANT: Replace with your actual deployed MemePi token address on Optimism Mainnet or Sepolia
+        const MEMEPI_TOKEN_ADDRESS = '0x746F0F67a6FB3c7362De547ce3249F37a138A128';
+        const GATED_ROOMS = { // Define rooms that require a minimum balance
+            'memepi_dev': { requiredBalance: 10 } // Example: 10 MEMEPI needed for #memepi-dev
+        };
+        const MEMEPI_TOKEN_ABI = [ // Minimal ABI for ERC-20 functions we need
+            "function balanceOf(address owner) view returns (uint256)",
+            "function decimals() view returns (uint8)",
+            "function symbol() view returns (string)",
+            "function transfer(address to, uint256 amount) returns (bool)" // Added for tipping
+        ];
+
+        // Uniswap Link Configuration
+        const UNISWAP_BASE_URL = 'https://app.uniswap.org/swap';
+        const OPTIMISM_CHAIN_ID_UNISWAP = 'optimism'; // Uniswap app uses 'optimism' string for chain ID
+        const NATIVE_ETH_UNISWAP_KEYWORD = 'ETH'; // Uniswap app uses 'ETH' for native Ether
+
+        // Room Inactivity Timeout (24 hours in milliseconds)
+        const ROOM_INACTIVITY_TIMEOUT_MS = 24 * 60 * 60 * 1000;
+        const DEFAULT_ROOMS = ['general', 'memepi_dev', 'random']; // Rooms that are always present
+
+        // --- Gun.js Initialization ---
+        const gun = Gun({
+            peers: [
+                'https://gun-manhattan.herokuapp.com/gun',
+                'https://gun-us.herokuapp.com/gun',
+                'https://gun-eu.herokuapp.com/gun'
+            ],
+            radisk: true // Enable IndexedDB for local persistence
+        });
+
+        // --- DOM Element References ---
+        const authUsernameInput = document.getElementById('auth-username');
+        const authPasswordInput = document.getElementById('auth-password');
+        const signupButton = document.getElementById('signup-button');
+        const loginButton = document.getElementById('login-button');
+        const authStatusSpan = document.getElementById('auth-status');
+
+        const walletAddressSpan = document.getElementById('wallet-address');
+        const memepiBalanceSpan = document.getElementById('memepi-balance');
+        const connectWalletButton = document.getElementById('connect-wallet-button');
+        const buyMemepiButton = document.getElementById('buy-memepi-button');
+
+        const aiBotToggle = document.getElementById('ai-bot-toggle');
+
+        const roomList = document.getElementById('room-list');
+        const createRoomButton = document.getElementById('create-room-button');
+        const userList = document.getElementById('user-list');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const messagesDiv = document.getElementById('messages');
+
+        // Modals
+        const tipModal = document.getElementById('tipModal');
+        const tipRecipientAliasSpan = document.getElementById('tipRecipientAlias');
+        const tipAmountInput = document.getElementById('tipAmountInput');
+        const tipMessageDiv = document.getElementById('tipMessage');
+        const confirmTipButton = document.getElementById('confirmTipButton');
+        const cancelTipButton = document.getElementById('cancelTipButton');
+
+        const createRoomModal = document.getElementById('createRoomModal');
+        const newRoomNameInput = document.getElementById('newRoomNameInput');
+        const createRoomMessageDiv = document.getElementById('createRoomMessage');
+        const confirmCreateRoomButton = document.getElementById('confirmCreateRoomButton');
+        const cancelCreateRoomButton = document.getElementById('cancelCreateRoomButton');
+
+        // --- Global State Variables ---
+        let currentUserAlias = null;
+        let currentRoomName = 'general';
+        let chatRoomRef = null;
+        let messageListener = null;
+        let typingTimeout = null;
+        let aiBotIsActive = false;
+        let aiBotLastResponseTime = 0;
+        const AI_BOT_RESPONSE_DELAY = 3000;
+
+        let walletProvider = null;
+        let walletSigner = null;
+        let connectedWalletAddress = null;
+        let memepiContract = null;
+        let memepiDecimals = 18;
+
+        let tippingTargetAlias = null;
+
+        // --- Data Maps for UI Rendering ---
+        const messagesMap = new Map();
+        const renderedMessageKeys = new Set();
+        const onlineUsersMap = new Map();
+        const typingUsersMap = new Map();
+        const allRoomsMap = new Map();
+
+
+        // --- Gun.js User Object ---
+        const user = gun.user();
+
+        // --- AI Bot User Object ---
+        const aiBotAlias = 'MemePiOracle';
+        const aiBotPassword = 'memepi-secret-bot-password-123';
+        const aiBotUser = gun.user();
+
+        // --- UI Update Functions ---
+
+        function updateLoginStatus(alias) {
+            currentUserAlias = alias;
+            console.log('updateLoginStatus called. Alias:', alias, 'currentUserAlias (global):', currentUserAlias); // DEBUG
+            if (alias) {
+                authStatusSpan.textContent = `Logged In: ${alias}`;
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                authUsernameInput.value = '';
+                authPasswordInput.value = '';
+                authUsernameInput.disabled = true;
+                authPasswordInput.disabled = true;
+                signupButton.disabled = true;
+                loginButton.textContent = 'Log Out';
+                user.get('status').put('online');
+                requestNotificationPermission();
+            } else {
+                authStatusSpan.textContent = 'Not Logged In';
+                messageInput.disabled = true;
+                sendButton.disabled = true;
+                authUsernameInput.disabled = false;
+                authPasswordInput.disabled = false;
+                signupButton.disabled = false;
+                loginButton.textContent = 'Log In';
+                if (currentUserAlias) { // Only set offline if they were previously logged in
+                    user.get('status').put('offline');
+                }
+                currentUserAlias = null;
+            }
+        }
+
+        function appendMessageElement(msg) {
+            if (!msg || !msg.text || !msg.sender || !msg.timestamp || renderedMessageKeys.has(msg._id)) {
+                return;
+            }
+
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (msg.sender === currentUserAlias) {
+                messageElement.classList.add('my-message');
+            } else if (msg.sender === aiBotAlias) {
+                messageElement.classList.add('ai-bot-message');
+            }
+
+            const timestamp = new Date(msg.timestamp).toLocaleString();
+            const messageContentDiv = document.createElement('div');
+            messageContentDiv.classList.add('message-content');
+            messageContentDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
+
+            messageElement.appendChild(messageContentDiv);
+
+            // Add Tip button if not sender's own message and not from AI bot, and user is logged in
+            if (msg.sender !== currentUserAlias && msg.sender !== aiBotAlias && currentUserAlias && connectedWalletAddress) {
+                const tipButton = document.createElement('button');
+                tipButton.classList.add('tip-button');
+                tipButton.textContent = 'Tip MEMEPI';
+                tipButton.onclick = () => openTipModal(msg.sender);
+                messageElement.appendChild(tipButton);
+            }
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.classList.add('timestamp');
+            timestampSpan.textContent = timestamp;
+            messageElement.appendChild(timestampSpan);
+
+
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            renderedMessageKeys.add(msg._id);
+        }
+
+        function initialRenderMessages() {
+            messagesDiv.innerHTML = '';
+            renderedMessageKeys.clear();
+            const sortedMessages = Array.from(messagesMap.values()).sort((a, b) => a.timestamp - b.timestamp);
+            sortedMessages.forEach(msg => {
+                if (!msg || !msg.text || !msg.sender || !msg.timestamp) {
+                    return;
+                }
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                if (msg.sender === currentUserAlias) {
+                    messageElement.classList.add('my-message');
+                } else if (msg.sender === aiBotAlias) {
+                    messageElement.classList.add('ai-bot-message');
+                }
+                messageElement.style.animation = 'none';
+
+                const timestamp = new Date(msg.timestamp).toLocaleString();
+                const messageContentDiv = document.createElement('div');
+                messageContentDiv.classList.add('message-content');
+                messageContentDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
+                messageElement.appendChild(messageContentDiv);
+
+                if (msg.sender !== currentUserAlias && msg.sender !== aiBotAlias && currentUserAlias && connectedWalletAddress) {
+                    const tipButton = document.createElement('button');
+                    tipButton.classList.add('tip-button');
+                    tipButton.textContent = 'Tip MEMEPI';
+                    tipButton.onclick = () => openTipModal(msg.sender);
+                    messageElement.appendChild(tipButton);
+                }
+
+                const timestampSpan = document.createElement('span');
+                timestampSpan.classList.add('timestamp');
+                timestampSpan.textContent = timestamp;
+                messageElement.appendChild(timestampSpan);
+
+                messagesDiv.appendChild(messageElement);
+                renderedMessageKeys.add(msg._id);
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function renderOnlineUsers() {
+            userList.innerHTML = '';
+            const sortedUsers = Array.from(onlineUsersMap.keys()).sort();
+            sortedUsers.forEach(alias => {
+                const status = onlineUsersMap.get(alias);
+                const userElement = document.createElement('li');
+                const dotClass = status === 'online' ? 'online-dot' : 'offline-dot';
+                userElement.innerHTML = `<span class="${dotClass}"></span>${alias}`;
+                userList.appendChild(userElement);
+            });
+        }
+
+        function renderTypingIndicator() {
+            const typingAliases = Array.from(typingUsersMap.keys()).filter(alias => {
+                return typingUsersMap.get(alias) === true && alias !== currentUserAlias;
+            });
+
+            if (typingAliases.length > 0) {
+                typingIndicator.textContent = `${typingAliases.join(', ')}`;
+                typingIndicator.classList.add('active');
+            } else {
+                typingIndicator.textContent = '';
+                typingIndicator.classList.remove('active');
+            }
+        }
+
+        // --- Wallet & Token Gating Logic ---
+
+        async function connectWallet() {
+            console.log("connectWallet called."); // DEBUG
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // Request account access
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    connectedWalletAddress = accounts[0];
+                    walletAddressSpan.textContent = connectedWalletAddress.substring(0, 6) + '...' + connectedWalletAddress.substring(38);
+                    connectWalletButton.textContent = 'Wallet Connected';
+                    connectWalletButton.disabled = true;
+
+                    // Initialize Ethers.js provider and signer
+                    walletProvider = new ethers.providers.Web3Provider(window.ethereum);
+                    walletSigner = walletProvider.getSigner();
+
+                    // Initialize MemePi token contract
+                    memepiContract = new ethers.Contract(MEMEPI_TOKEN_ADDRESS, MEMEPI_TOKEN_ABI, walletProvider);
+
+                    // Get decimals for correct balance display
+                    memepiDecimals = await memepiContract.decimals();
+                    console.log('MemePi Token Decimals:', memepiDecimals);
+
+                    // Fetch and display balance
+                    await updateMemePiBalance();
+
+                    // Listen for account changes
+                    window.ethereum.on('accountsChanged', handleAccountsChanged);
+                    window.ethereum.on('chainChanged', handleChainChanged);
+
+                    // Re-evaluate room access based on new balance
+                    await evaluateRoomAccess();
+                    console.log("Wallet connected successfully:", connectedWalletAddress); // DEBUG
+
+                } catch (error) {
+                    console.error("User denied account access or other wallet connection error:", error); // DEBUG
+                    alert("Failed to connect wallet: " + (error.message || "Unknown error. Check console."));
+                    resetWalletUI();
+                }
+            } else {
+                alert("MetaMask or compatible wallet is not detected. Please install it.");
+                console.warn("MetaMask not detected."); // DEBUG
+                resetWalletUI();
+            }
+        }
+
+        async function updateMemePiBalance() {
+            if (connectedWalletAddress && memepiContract) {
+                try {
+                    const balance = await memepiContract.balanceOf(connectedWalletAddress);
+                    const formattedBalance = ethers.utils.formatUnits(balance, memepiDecimals);
+                    memepiBalanceSpan.textContent = parseFloat(formattedBalance).toFixed(2); // Display with 2 decimal places
+                    console.log("MemePi balance updated:", formattedBalance); // DEBUG
+                } catch (error) {
+                    console.error("Error fetching MemePi balance:", error); // DEBUG
+                    memepiBalanceSpan.textContent = "Error";
+                }
+            } else {
+                memepiBalanceSpan.textContent = "0.00";
+            }
+        }
+
+        function resetWalletUI() {
+            console.log("resetWalletUI called."); // DEBUG
+            connectedWalletAddress = null;
+            walletProvider = null;
+            walletSigner = null;
+            memepiContract = null;
+            walletAddressSpan.textContent = "Not Connected";
+            memepiBalanceSpan.textContent = "0.00";
+            connectWalletButton.textContent = "Connect Wallet";
+            connectWalletButton.disabled = false;
+            // Re-evaluate room access (e.g., disable gated rooms)
+            evaluateRoomAccess();
+        }
+
+        // Handle account changes (e.g., user switches account in MetaMask)
+        async function handleAccountsChanged(accounts) {
+            console.log('MetaMask: accountsChanged event detected. Accounts:', accounts); // DEBUG
+            if (accounts.length === 0) {
+                // User disconnected all accounts
+                console.log('MetaMask: No accounts connected. Resetting wallet UI.'); // DEBUG
+                resetWalletUI();
+            } else if (accounts[0] !== connectedWalletAddress) {
+                connectedWalletAddress = accounts[0];
+                console.log('MetaMask: Account changed to:', connectedWalletAddress); // DEBUG
+                walletAddressSpan.textContent = connectedWalletAddress.substring(0, 6) + '...' + connectedWalletAddress.substring(38);
+                await updateMemePiBalance();
+                await evaluateRoomAccess();
+            }
+        }
+
+        // Handle chain changes (e.g., user switches network in MetaMask)
+        async function handleChainChanged(chainId) {
+            console.log('MetaMask: Chain changed to:', chainId); // DEBUG
+            // Optimism Mainnet Chain ID is 10 (0xA)
+            // Optimism Sepolia Testnet Chain ID is 11155420 (0xAA36A7)
+            if (chainId !== '0xA' && chainId !== '0xAA36A7') { // Check for Optimism Mainnet or Sepolia
+                alert("Please switch to Optimism Mainnet or Sepolia Testnet in your wallet.");
+                console.warn(`MetaMask: Incorrect chain detected. Expected 0xA or 0xAA36A7, got ${chainId}.`); // DEBUG
+                // Optionally disable chat or wallet features until on correct chain
+            }
+            // Re-initialize provider/signer if needed and update balance
+            if (window.ethereum && connectedWalletAddress) {
+                walletProvider = new ethers.providers.Web3Provider(window.ethereum);
+                walletSigner = walletProvider.getSigner();
+                memepiContract = new ethers.Contract(MEMEPI_TOKEN_ADDRESS, MEMEPI_TOKEN_ABI, walletProvider);
+                memepiDecimals = await memepiContract.decimals(); // Re-fetch decimals
+                await updateMemePiBalance();
+                await evaluateRoomAccess();
+            }
+        }
+
+        // Evaluate and update UI for gated rooms
+        async function evaluateRoomAccess() {
+            const currentBalance = parseFloat(memepiBalanceSpan.textContent);
+            Array.from(roomList.children).forEach(li => {
+                const roomName = li.dataset.room;
+                if (GATED_ROOMS[roomName]) {
+                    const required = GATED_ROOMS[roomName].requiredBalance;
+                    if (currentBalance < required) {
+                        li.classList.add('locked-room');
+                        li.title = `Requires ${required} MEMEPI`;
+                    } else {
+                        li.classList.remove('locked-room');
+                        li.title = '';
+                    }
+                }
+            });
+            console.log("Room access evaluated."); // DEBUG
+        }
+
+        // --- Buy MEMEPI Logic ---
+        function buyMemepi() {
+            const uniswapUrl = `${UNISWAP_BASE_URL}?chain=${OPTIMISM_CHAIN_ID_UNISWAP}&inputCurrency=${NATIVE_ETH_UNISWAP_KEYWORD}&outputCurrency=${MEMEPI_TOKEN_ADDRESS}`;
+            window.open(uniswapUrl, '_blank');
+            console.log("Opening Uniswap link:", uniswapUrl); // DEBUG
+        }
+
+        // --- Core Chat Logic ---
+
+        async function switchRoom(newRoom) {
+            console.log(`Attempting to switch to room: #${newRoom}`); // DEBUG
+            if (newRoom === currentRoomName) {
+                console.log(`Already in room: #${newRoom}. Aborting switch.`); // DEBUG
+                return;
+            }
+
+            if (GATED_ROOMS[newRoom]) {
+                if (!connectedWalletAddress || !memepiContract) {
+                    alert("Please connect your wallet to access this gated room.");
+                    console.warn(`Access denied to #${newRoom}: Wallet not connected.`); // DEBUG
+                    return;
+                }
+                const currentBalance = parseFloat(memepiBalanceSpan.textContent);
+                const required = GATED_ROOMS[newRoom].requiredBalance;
+
+                if (currentBalance < required) {
+                    alert(`Access Denied: You need at least ${required} MEMEPI to enter #${newRoom}. Your current balance is ${currentBalance}.`);
+                    console.warn(`Access denied to #${newRoom}: Insufficient balance (${currentBalance} < ${required}).`); // DEBUG
+                    return;
+                }
+            }
+
+            // Check if room is marked inactive (being deleted)
+            if (allRoomsMap.has(newRoom) && allRoomsMap.get(newRoom).status === 'inactive') {
+                alert(`Room #${newRoom} is currently marked inactive and is being removed.`);
+                console.warn(`Attempted to switch to inactive room #${newRoom}.`); // DEBUG
+                return;
+            }
+
+
+            if (chatRoomRef && messageListener) {
+                console.log(`Unsubscribing from old room: #${currentRoomName}`); // DEBUG
+                chatRoomRef.map().off(messageListener);
+            }
+
+            messagesMap.clear();
+            renderedMessageKeys.clear();
+            messagesDiv.innerHTML = '';
+
+            currentRoomName = newRoom;
+            chatRoomRef = gun.get(`memepi_chat_room_${currentRoomName}`); // This is where chatRoomRef is assigned
+            console.log(`Switched to room: #${currentRoomName}. chatRoomRef is now:`, chatRoomRef); // DEBUG: Confirm chatRoomRef is set
+
+            Array.from(roomList.children).forEach(li => {
+                if (li.dataset.room === newRoom) {
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            });
+
+            messageListener = chatRoomRef.map().on(function(data, key) {
+                if (data && data.text && data.sender && data.timestamp) {
+                    messagesMap.set(key, { ...data, _id: key });
+                    if (!renderedMessageKeys.has(key)) {
+                        appendMessageElement({ ...data, _id: key });
+                    }
+                    if (data.sender !== currentUserAlias && document.hidden) {
+                        showNotification(data.sender, data.text, currentRoomName);
+                    }
+                    if (aiBotIsActive && data.sender !== aiBotAlias) {
+                        handleAIBotResponse(data.text);
+                    }
+                    updateRoomLastActivity(currentRoomName);
+                }
+            });
+
+            // For initial load of new room, fetch existing messages and render them without animation
+            chatRoomRef.map().once(function(data, key){
+                if (data && data.text && data.sender && data.timestamp) {
+                    messagesMap.set(key, { ...data, _id: key });
+                }
+            }, () => {
+                initialRenderMessages();
+            });
+
+            messagesDiv.innerHTML = `<div class="message" style="text-align: center; font-style: italic;">Welcome to #${currentRoomName}!</div>`;
+        }
+
+        // --- Event Listeners ---
+
+        gun.on('auth', async function() {
+            const alias = await user.get('alias').then();
+            updateLoginStatus(alias);
+            console.log('Gun.js: User authenticated:', alias, 'currentUserAlias (global):', currentUserAlias); // DEBUG
+        });
+
+        // This attempts to recall previous session. It's crucial for Gun.js user state.
+        user.recall({ sessionStorage: true });
+        console.log('Gun.js: User recall initiated.'); // DEBUG
+
+        signupButton.addEventListener('click', function() {
+            const username = authUsernameInput.value.trim();
+            const password = authPasswordInput.value.trim();
+            if (!username || !password) { alert('Please enter both username and password to sign up.'); return; }
+            console.log('Auth: Attempting to create user:', username); // DEBUG
+            user.create(username, password, function(ack) {
+                if (ack.err) { alert('Sign Up Error: ' + ack.err); console.error('Auth: Sign Up Error:', ack.err); } // DEBUG
+                else { alert('Account created successfully! You are now logged in.'); console.log('Auth: Account created:', ack); } // DEBUG
+            });
+        });
+
+        loginButton.addEventListener('click', function() {
+            if (user.is) {
+                console.log('Auth: Attempting to log out user:', currentUserAlias); // DEBUG
+                user.leave();
+                updateLoginStatus(null);
+                alert('Logged out successfully.');
+                console.log('Auth: Logged out.'); // DEBUG
+                return;
+            }
+            const username = authUsernameInput.value.trim();
+            const password = authPasswordInput.value.trim();
+            if (!username || !password) { alert('Please enter both username and password to log in.'); return; }
+            console.log('Auth: Attempting to log in user:', username); // DEBUG
+            user.auth(username, password, function(ack) {
+                if (ack.err) { alert('Login Error: ' + ack.err); console.error('Auth: Login Error:', ack.err); } // DEBUG
+                else { alert('Logged in successfully!'); console.log('Auth: Logged in:', ack); } // DEBUG
+            });
+        });
+
+        connectWalletButton.addEventListener('click', connectWallet);
+        buyMemepiButton.addEventListener('click', buyMemepi);
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // --- Send Message Functionality (with added checks) ---
+        function sendMessage() {
+            console.log('sendMessage called.'); // DEBUG
+            console.log('  -> currentUserAlias:', currentUserAlias); // DEBUG
+            console.log('  -> user.is:', user.is); // DEBUG
+            console.log('  -> chatRoomRef:', chatRoomRef); // DEBUG
+
+            if (!user.is || !currentUserAlias) {
+                alert("You must be logged in to send messages.");
+                console.warn("Message not sent: User not logged in (user.is or currentUserAlias is false/null)."); // DEBUG
+                return;
+            }
+            // Ensure chatRoomRef is properly initialized and has a .set method
+            if (!chatRoomRef || typeof chatRoomRef.set !== 'function') {
+                alert("Cannot send message: Chat room is not ready. Please try switching rooms or refresh the page.");
+                console.error("Message not sent: chatRoomRef is null, undefined, or missing 'set' method."); // DEBUG
+                return;
+            }
+
+            const messageText = messageInput.value.trim();
+            if (!messageText) {
+                console.warn("Message not sent: Empty message text."); // DEBUG
+                return;
+            }
+
+            const message = {
+                sender: currentUserAlias,
+                text: messageText,
+                timestamp: Date.now()
+            };
+
+            try {
+                // This is the core Gun.js operation to add data
+                chatRoomRef.set(message);
+                console.log("Message sent to Gun.js:", message); // DEBUG
+                updateRoomLastActivity(currentRoomName);
+            } catch (e) {
+                console.error("Error setting message in Gun.js:", e); // DEBUG
+                alert("Failed to send message due to an internal error. Check console for details.");
+            }
+
+
+            messageInput.value = '';
+            clearTimeout(typingTimeout);
+            // Ensure user.get('typing') is valid before calling .put()
+            if (user.get('typing')) {
+                user.get('typing').put(false);
+            } else {
+                console.warn("user.get('typing') is undefined, cannot set typing status."); // DEBUG
+            }
+            typingUsersMap.delete(currentUserAlias);
+            renderTypingIndicator();
+        }
+
+        // --- Presence (Online Users) ---
+        gun.get('~').map().on(function(userNode, userPub) {
+            if (userNode && userNode.alias) {
+                userNode.get('status').on(function(status) {
+                    if (status) {
+                        onlineUsersMap.set(userNode.alias, status);
+                        renderOnlineUsers();
+                    } else {
+                        onlineUsersMap.delete(userNode.alias);
+                        renderOnlineUsers();
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (user.is) {
+                user.get('status').put('offline');
+                user.get('typing').put(false);
+            }
+            if (aiBotIsActive) {
+                aiBotUser.get('status').put('offline');
+            }
+        });
+
+        // --- Typing Indicator ---
+        messageInput.addEventListener('input', function() {
+            if (!user.is || !currentUserAlias) return;
+
+            // Ensure user.get('typing') is valid before calling .put()
+            if (user.get('typing')) {
+                user.get('typing').put(true);
+            } else {
+                console.warn("user.get('typing') is undefined, cannot set typing status."); // DEBUG
+            }
+            typingUsersMap.set(currentUserAlias, true);
+
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                if (user.get('typing')) {
+                    user.get('typing').put(false);
+                }
+                typingUsersMap.delete(currentUserAlias);
+                renderTypingIndicator();
+            }, 2000);
+        });
+
+        gun.get('~').map().on(function(userNode, userPub) {
+            if (userNode && userNode.alias && userNode.alias !== currentUserAlias) {
+                userNode.get('typing').on(function(typingStatus) {
+                    if (typingStatus === true) {
+                        typingUsersMap.set(userNode.alias, true);
+                    } else {
+                        typingUsersMap.delete(userNode.alias);
+                    }
+                    renderTypingIndicator();
+                });
+            }
+        });
+
+        // --- Desktop Notifications ---
+        function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                console.warn("This browser does not support desktop notification");
+            } else if (Notification.permission === "granted") {
+                console.log("Notification permission already granted.");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === "granted") {
+                        console.log("Notification permission granted.");
+                    }
+                });
+            }
+        }
+
+        function showNotification(sender, message, room) {
+            if (Notification.permission === "granted" && document.hidden) {
+                const notification = new Notification(`New message in #${room} from ${sender}`, {
+                    body: message,
+                    icon: 'images/memepi-logo.png'
+                });
+                setTimeout(() => notification.close(), 5000);
+            }
+        }
+
+        // --- AI Bot Logic ---
+
+        function aiBotLogin() {
+            aiBotUser.create(aiBotAlias, aiBotPassword, function(ack) {
+                if (ack.err) {
+                    aiBotUser.auth(aiBotAlias, aiBotPassword, function(authAck) {
+                        if (authAck.err) { console.error('AI Bot Auth Error:', authAck.err); }
+                        else { console.log('AI Bot logged in via auth:', authAck); aiBotUser.get('status').put('online'); }
+                    });
+                } else {
+                    console.log('AI Bot account created and logged in:', ack);
+                    aiBotUser.get('status').put('online');
+                }
+            });
+            aiBotIsActive = true;
+            console.log('MemePi Oracle Bot activated!');
+        }
+
+        function aiBotLogout() {
+            aiBotUser.leave();
+            aiBotUser.get('status').put('offline');
+            aiBotIsActive = false;
+            console.log('MemePi Oracle Bot deactivated!');
+        }
+
+        function handleAIBotResponse(messageText) {
+            const lowerCaseMessage = messageText.toLowerCase();
+            let botResponse = '';
+
+            const now = Date.now();
+            if (now - aiBotLastResponseTime < AI_BOT_RESPONSE_DELAY) {
+                return;
+            }
+
+            if (lowerCaseMessage.includes('hello') || lowerCaseMessage.includes('hi')) {
+                botResponse = 'Hello there, fellow MemePi enthusiast!';
+            } else if (lowerCaseMessage.includes('how are you')) {
+                botResponse = 'As a decentralized oracle, I am always in optimal state! How about you?';
+            } else if (lowerCaseMessage.includes('what is memepi')) {
+                botResponse = 'MemePi is a community-driven token on the Optimism Superchain, focused on fun, innovation, and decentralized growth! We are building exciting utilities!';
+            } else if (lowerCaseMessage.includes('optimism')) {
+                botResponse = 'Optimism is a fast, stable, and scalable Layer 2 blockchain. It\'s where MemePi thrives!';
+            } else if (lowerCaseMessage.includes('joke')) {
+                botResponse = 'Why did the crypto investor break up with the blockchain? Because he couldn\'t see a future with all those blocks!';
+            } else if (lowerCaseMessage.includes('thank you') || lowerCaseMessage.includes('thanks')) {
+                botResponse = 'You\'re most welcome! Always here to assist.';
+            } else if (lowerCaseMessage.includes('bye')) {
+                botResponse = 'Farewell for now! May your memes be plentiful and your transactions swift!';
+            } else if (lowerCaseMessage.includes('coin price') || lowerCaseMessage.includes('price')) {
+                botResponse = 'I cannot give financial advice, nor can I access real-time market data. Always DYOR!';
+            } else if (lowerCaseMessage.includes('utility')) {
+                botResponse = 'We\'re planning features like staking, governance, and more DeFi integrations! Stay tuned!';
+            }
+
+            if (botResponse) {
+                aiBotLastResponseTime = now;
+                setTimeout(() => {
+                    // Make sure botMessage is defined before using it
+                    const botMessage = {
+                        sender: aiBotAlias,
+                        text: botResponse,
+                        timestamp: Date.now()
+                    };
+                    chatRoomRef.set(botMessage);
+                }, Math.random() * 1500 + 500);
+            }
+        }
+
+        aiBotToggle.addEventListener('change', function() {
+            if (this.checked) {
+                aiBotLogin();
+            } else {
+                aiBotLogout();
+            }
+        });
+
+        // --- Tipping Logic ---
+        function openTipModal(recipientAlias) {
+            if (!connectedWalletAddress || !walletSigner || !memepiContract) {
+                alert("Please connect your wallet to send MEMEPI tips.");
+                console.warn("Tip attempt failed: Wallet not connected."); // DEBUG
+                return;
+            }
+            if (recipientAlias === currentUserAlias) {
+                alert("You cannot tip yourself!");
+                console.warn("Tip attempt failed: Cannot tip self."); // DEBUG
+                return;
+            }
+            if (recipientAlias === aiBotAlias) {
+                 alert("You cannot tip the MemePi Oracle Bot.");
+                 console.warn("Tip attempt failed: Cannot tip AI bot."); // DEBUG
+                 return;
+            }
+
+            tippingTargetAlias = recipientAlias;
+            tipRecipientAliasSpan.textContent = recipientAlias;
+            tipAmountInput.value = '';
+            tipMessageDiv.textContent = '';
+            tipModal.style.display = 'flex';
+        }
+
+        async function sendTip() {
+            const amount = parseFloat(tipAmountInput.value);
+            if (isNaN(amount) || amount <= 0) {
+                tipMessageDiv.textContent = 'Please enter a valid amount.';
+                tipMessageDiv.style.color = 'var(--error-red)';
+                console.warn("Tip attempt failed: Invalid amount entered."); // DEBUG
+                return;
+            }
+
+            // Get recipient's wallet address from their Gun.js user data
+            const recipientUserNode = gun.get('~').get(tippingTargetAlias);
+            let recipientWalletAddress = null;
+
+            // Use .once() to fetch the public key/wallet address
+            // This is asynchronous, so we need to ensure recipientWalletAddress is set before proceeding
+            // Wrap the rest of the sendTip logic in an async block or promise chain
+            await new Promise(resolve => {
+                recipientUserNode.get('pub').once(pub => {
+                    if (pub) {
+                        recipientWalletAddress = pub;
+                        console.log(`Found recipient wallet address for ${tippingTargetAlias}: ${recipientWalletAddress}`); // DEBUG
+                    } else {
+                        console.error(`Could not retrieve public key (wallet address) for alias: ${tippingTargetAlias}. User might not have a public wallet associated with their Gun account.`); // DEBUG
+                    }
+                    resolve(); // Resolve the promise once pub is checked
+                });
+            });
+
+
+            if (!recipientWalletAddress) {
+                tipMessageDiv.textContent = `Could not find wallet address for ${tippingTargetAlias}. User might not have a public wallet associated with their Gun account.`;
+                tipMessageDiv.style.color = 'var(--error-red)';
+                return;
+            }
+
+            tipMessageDiv.textContent = 'Confirming transaction in wallet...';
+            tipMessageDiv.style.color = 'var(--text-color)';
+
+            try {
+                const amountWei = ethers.utils.parseUnits(amount.toString(), memepiDecimals);
+                const memepiContractWithSigner = memepiContract.connect(walletSigner);
+                
+                console.log(`Sending ${amount} MEMEPI to ${recipientWalletAddress}...`); // DEBUG
+                const tx = await memepiContractWithSigner.transfer(recipientWalletAddress, amountWei);
+                
+                tipMessageDiv.textContent = `Transaction sent! Waiting for confirmation... Tx Hash: ${tx.hash.substring(0, 10)}...`;
+                tipMessageDiv.style.color = 'var(--success-green)';
+                console.log('Tip transaction sent:', tx);
+
+                await tx.wait();
+
+                tipMessageDiv.textContent = `Tip of ${amount} MEMEPI sent to ${tippingTargetAlias} successfully!`;
+                tipMessageDiv.style.color = 'var(--success-green)';
+                console.log('Tip transaction confirmed:', tx);
+
+                const tipMessage = {
+                    sender: currentUserAlias,
+                    text: `Tipped ${tippingTargetAlias} ${amount} MEMEPI! 🎉`,
+                    timestamp: Date.now()
+                };
+                chatRoomRef.set(tipMessage);
+                updateMemePiBalance();
+
+                setTimeout(() => tipModal.style.display = 'none', 2000);
+
+            } catch (error) {
+                console.error("Error sending tip:", error); // DEBUG
+                tipMessageDiv.textContent = `Error sending tip: ${error.message || error.code}`;
+                tipMessageDiv.style.color = 'var(--error-red)';
+            }
+        }
+
+        // --- Room Creation Logic ---
+        createRoomButton.addEventListener('click', () => {
+            if (!user.is || !currentUserAlias) {
+                alert("You must be logged in to create a room.");
+                console.warn("Create room failed: User not logged in."); // DEBUG
+                return;
+            }
+            newRoomNameInput.value = '';
+            createRoomMessageDiv.textContent = '';
+            createRoomModal.style.display = 'flex';
+        });
+
+        confirmCreateRoomButton.addEventListener('click', createNewRoom);
+
+        async function createNewRoom() {
+            let newRoomName = newRoomNameInput.value.trim().toLowerCase();
+            if (!newRoomName) {
+                createRoomMessageDiv.textContent = 'Room name cannot be empty.';
+                createRoomMessageDiv.style.color = 'var(--error-red)';
+                return;
+            }
+            if (!/^[a-z0-9_-]+$/.test(newRoomName)) {
+                createRoomMessageDiv.textContent = 'Room name can only contain lowercase letters, numbers, hyphens, or underscores.';
+                createRoomMessageDiv.style.color = 'var(--error-red)';
+                return;
+            }
+            if (newRoomName.startsWith('#')) {
+                newRoomName = newRoomName.substring(1);
+            }
+
+            // Check if room already exists
+            if (allRoomsMap.has(newRoomName)) {
+                createRoomMessageDiv.textContent = `Room #${newRoomName} already exists.`;
+                createRoomMessageDiv.style.color = 'var(--error-red)';
+                return;
+            }
+
+            const roomData = {
+                name: newRoomName,
+                creator: currentUserAlias,
+                createdAt: Date.now(),
+                lastActivity: Date.now(),
+                status: 'active'
+            };
+
+            gun.get('memepi_all_rooms').get(newRoomName).put(roomData, (ack) => {
+                if (ack.err) {
+                    createRoomMessageDiv.textContent = `Error creating room: ${ack.err}`;
+                    createRoomMessageDiv.style.color = 'var(--error-red)';
+                    console.error('Error creating room:', ack.err); // DEBUG
+                } else {
+                    createRoomMessageDiv.textContent = `Room #${newRoomName} created successfully!`;
+                    createRoomMessageDiv.style.color = 'var(--success-green)';
+                    console.log(`Room #${newRoomName} created.`); // DEBUG
+                    setTimeout(() => createRoomModal.style.display = 'none', 1500);
+                }
+            });
+        }
+
+
+        // --- Room Inactivity Logic ---
+
+        gun.get('memepi_all_rooms').map().on(function(roomData, roomName) {
+            if (roomData && roomName) {
+                if (roomData === null) {
+                    console.log(`Room #${roomName} detected as null (deleted). Removing from map.`); // DEBUG
+                    allRoomsMap.delete(roomName);
+                } else {
+                    console.log(`Updating room map for #${roomName}:`, roomData); // DEBUG
+                    allRoomsMap.set(roomName, roomData);
+                }
+                renderRoomList();
+            }
+        });
+
+        function updateRoomLastActivity(roomName) {
+            if (DEFAULT_ROOMS.includes(roomName)) {
+                return;
+            }
+            gun.get('memepi_all_rooms').get(roomName).get('lastActivity').put(Date.now(), (ack) => {
+                if (ack.err) {
+                    console.error(`Error updating lastActivity for room ${roomName}:`, ack.err); // DEBUG
+                } else {
+                    console.log(`Updated lastActivity for room #${roomName}.`); // DEBUG
+                }
+            });
+        }
+
+        function renderRoomList() {
+            console.log("Rendering room list..."); // DEBUG
+            roomList.innerHTML = '';
+
+            const roomsToRender = new Map();
+
+            DEFAULT_ROOMS.forEach(roomName => {
+                roomsToRender.set(roomName, {
+                    name: roomName,
+                    creator: 'System',
+                    createdAt: 0,
+                    lastActivity: Infinity,
+                    status: 'active'
+                });
+            });
+
+            Array.from(allRoomsMap.entries()).forEach(([roomName, roomData]) => {
+                if (!DEFAULT_ROOMS.includes(roomName)) {
+                    roomsToRender.set(roomName, { name: roomName, ...roomData });
+                }
+            });
+
+            const sortedRooms = Array.from(roomsToRender.values()).sort((a, b) => {
+                if (a.status === 'active' && b.status !== 'active') return -1;
+                if (a.status !== 'active' && b.status === 'active') return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            sortedRooms.forEach(room => {
+                const li = document.createElement('li');
+                li.dataset.room = room.name;
+                li.textContent = `#${room.name}`;
+
+                if (room.name === currentRoomName) {
+                    li.classList.add('active');
+                }
+
+                if (GATED_ROOMS[room.name]) {
+                    const lockSpan = document.createElement('span');
+                    lockSpan.classList.add('lock-icon');
+                    lockSpan.textContent = '🔒';
+                    li.appendChild(lockSpan);
+                    if (room.name !== currentRoomName) {
+                        li.classList.add('locked-room');
+                        li.title = `Requires ${GATED_ROOMS[room.name].requiredBalance} MEMEPI`;
+                    }
+                }
+
+                if (room.status === 'active' && room.lastActivity !== Infinity && (Date.now() - room.lastActivity) > ROOM_INACTIVITY_TIMEOUT_MS) {
+                    li.classList.add('inactive-room');
+                    li.title = `Inactive for >${ROOM_INACTIVITY_TIMEOUT_MS / (60 * 60 * 1000)}h. Click to remove.`;
+                    console.log(`Room #${room.name} detected as inactive. Attempting to remove.`); // DEBUG
+                    deleteRoom(room.name);
+                } else if (room.status === 'inactive') {
+                     li.classList.add('inactive-room');
+                     li.title = `Room #${room.name} is being deleted due to inactivity.`;
+                }
+
+                li.addEventListener('click', async () => {
+                    if (li.classList.contains('inactive-room')) {
+                        const confirmDelete = confirm(`Room #${room.name} has been inactive for over ${ROOM_INACTIVITY_TIMEOUT_MS / (60 * 60 * 1000)} hours. Do you want to remove it from the list for everyone? This action is irreversible.`);
+                        if (confirmDelete) {
+                            deleteRoom(room.name);
+                        }
+                    } else {
+                        await switchRoom(room.name);
+                    }
+                });
+                roomList.appendChild(li);
+            });
+            evaluateRoomAccess();
+        }
+
+        function deleteRoom(roomName) {
+            if (DEFAULT_ROOMS.includes(roomName)) {
+                console.warn(`Attempted to delete default room #${roomName}. Aborting.`); // DEBUG
+                return;
+            }
+            console.log(`Initiating deletion for room #${roomName}.`); // DEBUG
+            gun.get('memepi_all_rooms').get(roomName).get('status').put('inactive', (ack) => {
+                 if (ack.err) { console.error(`Error marking room #${roomName} inactive:`, ack.err); return; } // DEBUG
+                 console.log(`Room #${roomName} marked inactive. Now attempting to nullify.`); // DEBUG
+                 gun.get('memepi_all_rooms').get(roomName).put(null, (ack2) => {
+                     if (ack2.err) {
+                         console.error(`Error deleting room #${roomName}:`, ack2.err); // DEBUG
+                     } else {
+                         console.log(`Room #${roomName} successfully deleted.`); // DEBUG
+                         if (currentRoomName === roomName) {
+                             switchRoom('general');
+                         }
+                     }
+                 });
+            });
+        }
+
+
+        // --- Modals Event Listeners ---
+        cancelTipButton.addEventListener('click', () => tipModal.style.display = 'none');
+        confirmTipButton.addEventListener('click', sendTip);
+        cancelCreateRoomButton.addEventListener('click', () => createRoomModal.style.display = 'none');
+        confirmCreateRoomButton.addEventListener('click', createNewRoom);
+
+
+        // --- Initialization ---
+        console.log("MemePi Chat App: Initializing..."); // DEBUG
+
+        // Add default rooms if they don't exist in the Gun.js graph initially
+        DEFAULT_ROOMS.forEach(roomName => {
+            gun.get('memepi_all_rooms').get(roomName).once(data => {
+                if (!data) {
+                    console.log(`Creating default room #${roomName} as it does not exist.`); // DEBUG
+                    gun.get('memepi_all_rooms').get(roomName).put({
+                        name: roomName,
+                        creator: 'System',
+                        createdAt: 0,
+                        lastActivity: Infinity,
+                        status: 'active'
+                    });
+                }
+            });
+        });
+
+        // Initial room switch - Ensure this is called to set up chatRoomRef
+        console.log("Initiating initial room switch to:", currentRoomName); // DEBUG
+        switchRoom(currentRoomName);
+
+        messagesDiv.innerHTML = '<div class="message" style="text-align: center; font-style: italic;">Welcome! Please sign up or log in to chat.</div>';
+
+        // Initial check for wallet connection on load
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.request({ method: 'eth_accounts' })
+                .then(accounts => {
+                    if (accounts.length > 0) {
+                        console.log("MetaMask: Found existing wallet connection, attempting to re-connect."); // DEBUG
+                        connectWallet();
+                    } else {
+                        console.log("MetaMask: No existing wallet connection found on load."); // DEBUG
+                    }
+                })
+                .catch(error => console.error("MetaMask: Error checking existing accounts on load:", error)); // DEBUG
+        } else {
+            console.warn("MetaMask or compatible wallet not detected in browser."); // DEBUG
+        }
+        console.log("MemePi Chat App: Initialization complete."); // DEBUG
+
+    </script>
+</body>
+</html>
