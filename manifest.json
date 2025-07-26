@@ -1,11 +1,12 @@
 {
   "name": "MemePi P2P Chat",
   "short_name": "MemePi Chat",
-  "description": "A decentralized P2P chat application for the MemePi community.",
+  "description": "A decentralized P2P chat application for the MemePi community, with offline viewing capabilities.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#F8F8F8",
-  "theme_color": "#A08CE5",
+  "theme_color": "#6A4DE5",
   "icons": [
     {
       "src": "images/memepi-logo-192.png",
