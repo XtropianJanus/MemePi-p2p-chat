@@ -565,7 +565,7 @@
         }
         #send-button:hover { background-color: #5A3DBF; }
 
-        /* --- Modals (for Tipping & Create Room & Moderator Management) --- */
+        /* --- Modals (for Tipping & Create Room) --- */
         .modal {
             display: none;
             position: fixed;
@@ -883,7 +883,7 @@
         // --- SUPER ADMIN CONFIGURATION ---
         // IMPORTANT: REPLACE THIS WITH YOUR OWN GUN.JS PUBLIC KEY
         // To get your public key: Log in to your Gun.js account in the app, open console (F12), type `gun.user().is.pub` and copy the output.
-        const SUPER_ADMIN_PUB_KEY = 'YOUR_GUN_JS_PUBLIC_KEY_HERE'; 
+        const SUPER_ADMIN_PUB_KEY = 'YOUR_ACTUAL_GUN_JS_PUBLIC_KEY_HERE'; 
 
         // --- Gun.js Initialization ---
         const gun = Gun({
@@ -2174,6 +2174,20 @@
         }
         console.log("MemePi Chat App: Initialization complete."); // DEBUG
 
+    </script>
+    <script>
+        // --- Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+                    .then((registration) => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
