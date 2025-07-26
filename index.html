@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MemePi P2P Chat - Full Features & Buy MEMEPI</title>
-    <!-- Favicon - Recommended, replace with your actual MemePi favicon -->
-    <!-- <link rel="icon" href="images/memepi-favicon.png" type="image/png"> -->
+    <title>MemePi P2P Chat - Unleash Your Brilliance</title>
+    
+    <!-- Google Fonts: Poppins (for main text), Dancing Script (for accents) -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- PWA Manifest Link -->
-    <!-- IMPORTANT: For subfolder deployment, path should be relative to index.html -->
     <link rel="manifest" href="manifest.json"> 
 
     <style>
         /* --- Global & Body Styling --- */
         :root {
-            /* Theme Colors derived from MemePi Logo */
-            --memepi-purple: #A08CE5;
-            --memepi-purple-dark: #8C7AD0;
-            --token-yellow: #FFEB3B;
-            --token-yellow-dark: #D4AC00;
+            /* New Theme Colors inspired by Design Hub image */
+            --primary-purple: #6A4DE5; /* Deeper purple for primary elements */
+            --secondary-yellow: #FFEB3B; /* Vibrant yellow for highlights */
+            --accent-pink: #E08CE5; /* Lighter purple/pink for accents */
+            --text-dark: #2C2C2C; /* Darker text for contrast */
+            --text-medium: #555; /* Medium gray for secondary text */
+            --text-light: #888; /* Lighter gray for timestamps/hints */
+            --bg-white: #FFFFFF; /* Clean white background */
+            --bg-light-gray: #F8F8F8; /* Subtle background for sections */
+            --border-light: #E0E0E0; /* Light border color */
             --success-green: #4CAF50;
             --success-green-dark: #45a049;
-            --light-bg: #F8F8F8;
-            --lighter-bg: #FDFDFD;
-            --text-color: #333;
-            --secondary-text-color: #555;
-            --border-color: #eee;
-            --message-bg-other: #EBE0FF; /* Light purple from MemePi */
-            --message-bg-self: #FFF9C4; /* Light yellow from TOKEN */
-            --message-text-other: #6A4D9F; /* Darker purple */
-            --message-text-self: #D4AC00; /* Darker yellow */
-            --ai-bot-bg: #CCEEFF; /* Light blue for AI messages */
-            --ai-bot-text: #006064; /* Dark teal for AI text */
-            --error-red: #FF4444; /* For error messages / disabled states */
+            --error-red: #FF4444;
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif; /* Main font */
             margin: 0;
-            background: linear-gradient(135deg, var(--light-bg), #E0F7FA, var(--light-bg));
+            background: linear-gradient(135deg, var(--secondary-yellow) 0%, var(--accent-pink) 50%, var(--primary-purple) 100%);
             background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite alternate;
-            color: var(--text-color);
+            animation: gradientShift 20s ease infinite alternate; /* Slower, more massive shift */
+            color: var(--text-dark);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
+            overflow-x: hidden; /* Prevent horizontal scroll on animations */
         }
 
         /* --- Keyframe Animations --- */
@@ -79,165 +76,241 @@
             60%, 100% { content: "..."; }
         }
 
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes rotateStar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         /* --- Header & Logo --- */
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         #logo-img {
-            max-width: 150px;
+            max-width: 120px; /* Slightly smaller logo */
             height: auto;
             display: block;
             margin: 0 auto 10px auto;
             animation: pulse 2s infinite ease-in-out;
         }
         h1 {
-            color: var(--memepi-purple);
+            font-family: 'Poppins', sans-serif;
+            color: var(--bg-white); /* White for main title on vibrant background */
             margin-top: 0;
-            font-size: 2.5em;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-            letter-spacing: 1px;
+            font-size: 3.2em; /* Larger, bolder heading */
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            letter-spacing: -0.02em; /* Tighter letter spacing */
+            line-height: 1.1;
+            font-weight: 800; /* Extra bold */
+            animation: fadeInSlideUp 0.8s ease-out;
         }
+        h1 span {
+            color: var(--secondary-yellow); /* Yellow highlight for "Creative brilliance" */
+            font-weight: inherit;
+        }
+        .subtitle-location {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1.1em;
+            color: var(--bg-white);
+            margin-top: -10px;
+            animation: fadeInSlideUp 1s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        /* --- Abstract Elements (Decorative) --- */
+        .abstract-element {
+            position: absolute;
+            z-index: -1; /* Behind content */
+            opacity: 0.6;
+        }
+        .star-1 {
+            top: 10%;
+            left: 20%;
+            font-size: 5em;
+            color: var(--secondary-yellow);
+            animation: rotateStar 15s linear infinite;
+        }
+        .star-2 {
+            bottom: 5%;
+            right: 15%;
+            font-size: 3em;
+            color: var(--accent-pink);
+            animation: rotateStar 20s linear infinite reverse;
+        }
+        .squiggle {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Dancing Script', cursive;
+            font-size: 8em;
+            color: var(--accent-pink);
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: -1;
+        }
+
         #app-container {
             max-width: 900px;
-            margin: 0 auto; /* Centers the app container on desktop */
-            background-color: var(--lighter-bg);
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            margin: 0 auto;
+            background-color: var(--bg-white); /* Clean white background */
+            border-radius: 20px; /* More rounded corners */
+            box-shadow: var(--shadow-medium); /* Stronger, softer shadow */
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid var(--border-light);
+            animation: bounceIn 0.8s ease-out; /* App container animation */
+        }
+
+        /* --- Buttons (General Style) --- */
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px; /* More rounded */
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle button shadow */
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        button:disabled {
+            background-color: #cccccc !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            box-shadow: none !important;
+            opacity: 0.7;
         }
 
         /* --- Authentication Section --- */
         #auth-section {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 25px;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
-            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 12px; /* Increased gap */
             align-items: flex-end;
-            background-color: var(--lighter-bg);
+            background-color: var(--bg-light-gray); /* Light gray background */
         }
         #auth-section input {
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 14px; /* Larger padding */
+            border: 1px solid var(--border-light);
+            border-radius: 10px; /* More rounded */
             flex-grow: 1;
-            min-width: 120px; /* Ensures inputs don't get too small */
+            min-width: 150px;
             font-size: 1em;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--bg-white);
         }
         #auth-section input:focus {
             outline: none;
-            border-color: var(--memepi-purple);
-            box-shadow: 0 0 0 3px rgba(var(--memepi-purple), 0.2);
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 4px rgba(var(--primary-purple), 0.2);
         }
         #auth-section button {
-            padding: 12px 20px;
-            background-color: var(--memepi-purple);
+            background-color: var(--primary-purple);
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            white-space: nowrap;
-            transition: background-color 0.2s ease, transform 0.1s ease;
         }
-        #auth-section button:hover { background-color: var(--memepi-purple-dark); transform: translateY(-1px); }
-        #auth-section button:active { transform: translateY(0); }
+        #auth-section button:hover { background-color: #5A3DBF; } /* Darker purple on hover */
         #auth-status {
             margin-left: auto;
-            padding: 10px 15px;
-            background-color: #E6F7F5;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 12px 18px;
+            background-color: #E6F7F5; /* Keep success green tint */
+            border-radius: 10px;
+            font-weight: 600;
             white-space: nowrap;
             color: var(--success-green);
         }
 
         /* --- Wallet Section --- */
         #wallet-section {
-            padding: 10px 20px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--lighter-bg);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-white);
             display: flex;
-            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+            flex-wrap: wrap;
             gap: 10px;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
+            font-size: 0.95em;
+            color: var(--text-medium);
         }
         #wallet-info {
             flex-grow: 1;
+            line-height: 1.6;
         }
         #wallet-address {
-            font-weight: bold;
-            color: var(--memepi-purple);
-            word-break: break-all; /* Prevents long addresses from overflowing */
+            font-weight: 600;
+            color: var(--primary-purple);
+            word-break: break-all;
         }
         #memepi-balance {
-            font-weight: bold;
-            color: var(--token-yellow-dark);
+            font-weight: 600;
+            color: var(--secondary-yellow);
         }
-        #connect-wallet-button, #buy-memepi-button { /* Added buy button */
-            padding: 8px 15px;
-            background-color: var(--token-yellow);
-            color: var(--text-color);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+        #connect-wallet-button, #buy-memepi-button {
+            background-color: var(--secondary-yellow);
+            color: var(--text-dark);
         }
-        #connect-wallet-button:hover, #buy-memepi-button:hover { background-color: #FFD700; transform: translateY(-1px); }
-        #connect-wallet-button:active, #buy-memepi-button:active { transform: translateY(0); }
-        #connect-wallet-button:disabled, #buy-memepi-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+        #connect-wallet-button:hover, #buy-memepi-button:hover { background-color: #FFD700; }
 
         /* --- AI Bot Toggle --- */
         #ai-bot-toggle-section {
-            padding: 10px 20px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--lighter-bg);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-light-gray);
             display: flex;
             align-items: center;
             justify-content: flex-end;
             gap: 10px;
             font-size: 0.9em;
-            color: var(--secondary-text-color);
+            color: var(--text-medium);
         }
         #ai-bot-toggle-section label {
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            font-weight: 500;
         }
         #ai-bot-toggle {
             width: 20px;
             height: 20px;
             cursor: pointer;
+            accent-color: var(--primary-purple); /* Custom checkbox color */
         }
 
 
         /* --- Main Chat Layout --- */
         #main-chat-layout {
-            display: flex; /* Desktop: sidebar and chat area side-by-side */
+            display: flex;
             flex-grow: 1;
         }
         #sidebar {
-            width: 200px; /* Fixed width for sidebar on desktop */
-            border-right: 1px solid var(--border-color);
-            padding: 15px;
+            width: 250px; /* Slightly wider sidebar */
+            border-right: 1px solid var(--border-light);
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            background-color: var(--light-bg);
+            background-color: var(--bg-light-gray);
+            gap: 20px; /* Space between sections */
         }
         #chat-area {
             flex-grow: 1;
@@ -246,37 +319,53 @@
         }
 
         /* --- Room Selection --- */
-        #room-selection h3 { color: var(--memepi-purple); margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        #room-selection h3, #online-users h3, #moderator-controls h3 {
+            font-size: 1.2em;
+            color: var(--primary-purple);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-light); /* Thicker border */
+            padding-bottom: 8px;
+            font-weight: 700;
+        }
         #room-list {
             list-style: none;
             padding: 0;
-            margin: 0 0 20px 0;
+            margin: 0;
         }
         #room-list li {
-            padding: 10px 5px;
+            padding: 12px 8px; /* More padding */
             cursor: pointer;
-            color: var(--secondary-text-color);
-            font-weight: bold;
-            transition: color 0.2s ease, border-left 0.2s ease, background-color 0.2s ease;
-            border-left: 3px solid transparent;
+            color: var(--text-medium);
+            font-weight: 500;
+            transition: color 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
+            border-radius: 8px; /* Rounded list items */
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 5px; /* Space between items */
         }
         #room-list li:hover {
-            color: var(--memepi-purple);
-            background-color: rgba(var(--memepi-purple), 0.05);
+            color: var(--primary-purple);
+            background-color: rgba(var(--primary-purple), 0.08);
+            transform: translateX(3px); /* Subtle slide on hover */
         }
         #room-list li.active {
-            color: var(--memepi-purple);
-            border-left: 3px solid var(--memepi-purple);
-            padding-left: 5px;
-            background-color: rgba(var(--memepi-purple), 0.1);
+            color: var(--bg-white); /* White text for active room */
+            background-color: var(--primary-purple); /* Solid purple background */
+            box-shadow: var(--shadow-light);
+            transform: translateX(0);
+        }
+        #room-list li.active:hover {
+            background-color: #5A3DBF; /* Darker purple on hover */
+            color: var(--bg-white);
         }
         .locked-room {
             color: var(--error-red) !important;
             cursor: not-allowed !important;
             background-color: rgba(var(--error-red), 0.05) !important;
+            border-left: 3px solid var(--error-red);
+            padding-left: 5px;
         }
         .locked-room:hover {
             color: var(--error-red) !important;
@@ -288,33 +377,33 @@
             color: var(--error-red);
         }
         .inactive-room {
-            color: #999 !important;
+            color: var(--text-light) !important;
             font-style: italic;
             text-decoration: line-through;
+            border-left: 3px solid var(--text-light);
+            padding-left: 5px;
+        }
+        .inactive-room:hover {
+            background-color: rgba(var(--text-light), 0.1) !important;
         }
         .inactive-room .lock-icon {
-            color: #999 !important;
+            color: var(--text-light) !important;
         }
         /* Room creation button */
         #create-room-button {
             display: block;
             width: calc(100% - 10px);
-            padding: 10px;
-            margin-top: 10px;
+            padding: 12px;
+            margin-top: 15px;
             background-color: var(--success-green);
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-size: 1em;
         }
-        #create-room-button:hover { background-color: var(--success-green-dark); transform: translateY(-1px); }
-        #create-room-button:active { transform: translateY(0); }
+        #create-room-button:hover { background-color: var(--success-green-dark); }
 
 
         /* --- User List --- */
-        #online-users h3 { color: var(--memepi-purple); margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        #online-users { margin-top: 20px; } /* Space from rooms */
         #user-list {
             list-style: none;
             padding: 0;
@@ -324,147 +413,146 @@
         }
         #user-list li {
             padding: 8px 0;
-            color: var(--secondary-text-color);
+            color: var(--text-medium);
+            font-weight: 500;
             display: flex;
             align-items: center;
             transition: color 0.2s ease, background-color 0.2s ease;
         }
         #user-list li:hover {
             background-color: rgba(0,0,0,0.02);
+            color: var(--text-dark);
         }
         .online-dot, .offline-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px; /* Slightly larger dot */
+            height: 10px;
             border-radius: 50%;
-            margin-right: 8px;
+            margin-right: 10px; /* More space */
             display: inline-block;
             transition: background-color 0.3s ease;
         }
         .online-dot { background-color: var(--success-green); }
-        .offline-dot { background-color: #ccc; }
+        .offline-dot { background-color: var(--text-light); }
 
         /* --- Typing Indicators --- */
         #typing-indicator {
-            min-height: 20px;
+            min-height: 25px; /* Taller */
             font-style: italic;
-            color: var(--secondary-text-color);
-            padding: 5px 15px;
+            color: var(--text-medium);
+            padding: 8px 20px; /* More padding */
             opacity: 0;
             transition: opacity 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 2px;
-            border-top: 1px solid var(--border-color);
+            gap: 4px; /* More gap */
+            border-top: 1px solid var(--border-light);
+            background-color: var(--bg-light-gray);
+            font-size: 0.9em;
         }
         #typing-indicator.active { opacity: 1; }
-        #typing-indicator::after {
-            content: ".";
-            animation: typingDots 1.5s infinite steps(1);
-            display: inline-block;
-            overflow: hidden;
-            width: 1em;
-        }
-        #typing-indicator:not(.active)::after {
-            content: "";
-        }
 
         /* --- Messages Display --- */
         #messages {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 20px; /* More padding */
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-white);
         }
         .message {
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            border-radius: 18px;
-            background-color: var(--message-bg-other);
+            margin-bottom: 12px; /* More space between messages */
+            padding: 12px 18px; /* More padding */
+            border-radius: 22px; /* Even more rounded */
+            background-color: var(--bg-light-gray); /* Lighter background for others */
             word-wrap: break-word;
             position: relative;
-            line-height: 1.4;
-            max-width: 80%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            animation: fadeInSlideUp 0.3s ease-out;
+            line-height: 1.5;
+            max-width: 85%; /* Slightly wider messages */
+            box-shadow: var(--shadow-light); /* Softer shadow */
+            animation: fadeInSlideUp 0.4s ease-out; /* Slightly slower animation */
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
         }
-        .message strong { color: var(--message-text-other); }
+        .message strong { 
+            color: var(--primary-purple); /* Consistent purple for sender name */
+            font-weight: 600;
+        }
         .message .timestamp {
-            font-size: 0.7em;
-            color: #888;
-            margin-left: 10px;
+            font-size: 0.75em; /* Slightly larger timestamp */
+            color: var(--text-light);
+            margin-left: 12px;
         }
         .message-content {
             flex-grow: 1;
             text-align: left;
+            color: var(--text-dark); /* Darker text for readability */
         }
         .message.my-message .message-content {
             text-align: right;
         }
         .message.my-message {
-            background-color: var(--message-bg-self);
+            background-color: var(--secondary-yellow); /* Yellow for self messages */
             text-align: right;
             margin-left: auto;
             margin-right: 0;
             flex-direction: row-reverse;
         }
-        .message.my-message strong { color: var(--message-text-self); }
-        .message.my-message .timestamp { left: auto; right: 8px; }
+        .message.my-message strong { color: var(--text-dark); } /* Dark text on yellow */
+        .message.my-message .timestamp { left: auto; right: 12px; }
 
         /* AI Bot Message Styling */
         .message.ai-bot-message {
-            background-color: var(--ai-bot-bg);
-            color: var(--ai-bot-text);
+            background-color: #D6EFFF; /* Lighter blue */
+            color: #004D7A; /* Darker blue text */
             text-align: left;
             margin-right: auto;
             margin-left: 0;
             flex-direction: row;
         }
         .message.ai-bot-message strong {
-            color: var(--ai-bot-text);
+            color: #004D7A;
         }
 
         /* Tip button inside message */
         .tip-button {
-            background-color: var(--token-yellow);
-            color: var(--text-color);
-            border: none;
-            border-radius: 5px;
-            padding: 4px 8px;
-            font-size: 0.7em;
-            cursor: pointer;
-            margin-left: 10px;
-            transition: background-color 0.2s ease;
-            white-space: nowrap;
+            background-color: var(--accent-pink); /* Pink for tip button */
+            color: white;
+            border-radius: 8px; /* More rounded */
+            padding: 6px 10px; /* More padding */
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 12px;
+            box-shadow: none; /* No extra shadow on small button */
         }
-        .tip-button:hover { background-color: #FFD700; }
-        .message.my-message .tip-button { margin-left: 0; margin-right: 10px; }
+        .tip-button:hover { background-color: #C17BE0; transform: translateY(-1px); }
+        .message.my-message .tip-button { margin-left: 0; margin-right: 12px; }
 
         /* --- Input Area --- */
         #input-area {
-            padding: 15px;
+            padding: 20px; /* More padding */
             display: flex;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-light);
+            background-color: var(--bg-white);
         }
         #message-input {
             flex-grow: 1;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-right: 10px;
+            padding: 14px; /* Larger padding */
+            border: 1px solid var(--border-light);
+            border-radius: 10px; /* More rounded */
+            margin-right: 12px; /* More margin */
             font-size: 1em;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--bg-light-gray); /* Light gray input field */
         }
         #message-input:focus {
             outline: none;
-            border-color: var(--success-green);
-            box-shadow: 0 0 0 3px rgba(var(--success-green), 0.2);
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 4px rgba(var(--primary-purple), 0.2);
         }
         #message-input::placeholder {
-            color: #aaa;
+            color: var(--text-light);
             opacity: 1;
             transition: color 0.3s ease;
         }
@@ -472,25 +560,12 @@
             color: transparent;
         }
         #send-button {
-            padding: 12px 20px;
-            background-color: var(--success-green);
+            background-color: var(--primary-purple);
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
         }
-        #send-button:hover { background-color: var(--success-green-dark); transform: translateY(-1px); }
-        #send-button:active { transform: translateY(0); }
-        #send-button:disabled, #message-input:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+        #send-button:hover { background-color: #5A3DBF; }
 
-        /* --- Modals (for Tipping & Create Room) --- */
+        /* --- Modals (for Tipping & Create Room & Moderator Management) --- */
         .modal {
             display: none;
             position: fixed;
@@ -500,162 +575,191 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0,0,0,0.7); /* Darker overlay */
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.3s ease-out;
         }
         .modal-content {
-            background-color: #fefefe;
+            background-color: var(--bg-white);
             margin: auto;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            padding: 30px; /* More padding */
+            border-radius: 15px; /* More rounded */
+            box-shadow: var(--shadow-medium);
             width: 90%;
-            max-width: 400px;
+            max-width: 450px; /* Slightly wider */
             text-align: center;
+            animation: bounceIn 0.4s ease-out;
         }
         .modal-content h3 {
-            color: var(--memepi-purple);
+            color: var(--primary-purple);
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 25px; /* More margin */
+            font-size: 1.5em;
+            font-weight: 700;
         }
         .modal-content input {
-            width: calc(100% - 24px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            width: calc(100% - 28px); /* Adjust for padding */
+            padding: 12px; /* More padding */
+            margin-bottom: 18px; /* More margin */
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
             font-size: 1em;
         }
         .modal-content button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 12px 25px; /* More padding */
+            margin: 8px; /* More margin */
+            border-radius: 8px;
             font-size: 1em;
-            transition: background-color 0.2s ease;
+            font-weight: 600;
         }
         .modal-content button.confirm-button {
-            background-color: var(--success-green);
+            background-color: var(--primary-purple); /* Use primary purple for confirm */
             color: white;
         }
-        .modal-content button.confirm-button:hover { background-color: var(--success-green-dark); }
+        .modal-content button.confirm-button:hover { background-color: #5A3DBF; }
         .modal-content button.cancel-button {
-            background-color: #f44336;
+            background-color: var(--text-light); /* Use light gray for cancel */
             color: white;
         }
-        .modal-content button.cancel-button:hover { background-color: #da190b; }
+        .modal-content button.cancel-button:hover { background-color: #777; }
         .modal-message {
-            margin-top: 15px;
-            font-weight: bold;
-            color: var(--text-color);
+            margin-top: 20px; /* More margin */
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95em;
         }
-
+        #currentModsList li {
+            padding: 5px 0;
+            font-size: 0.9em;
+            color: var(--text-medium);
+            word-break: break-all;
+        }
+        #currentModsList li:first-child {
+            margin-bottom: 10px;
+        }
 
         /* --- Responsive Adjustments --- */
-        /* This media query applies styles when the screen width is 768px or less (typical for tablets and phones) */
         @media (max-width: 768px) {
             body {
-                padding: 10px; /* Reduce overall padding on smaller screens */
-            }
-            #app-container {
-                border-radius: 0; /* Make corners less rounded or sharp on mobile */
-                box-shadow: none; /* Reduce heavy shadows on mobile */
+                padding: 15px;
             }
             h1 {
-                font-size: 2em; /* Smaller heading on mobile */
+                font-size: 2.5em;
             }
-
-            /* Main chat layout: stack sidebar and chat area vertically */
+            .subtitle-location {
+                font-size: 1em;
+            }
+            #app-container {
+                border-radius: 10px;
+                box-shadow: none;
+            }
+            #auth-section, #wallet-section, #ai-bot-toggle-section {
+                padding: 15px;
+                gap: 8px;
+            }
+            #auth-section input, #auth-section button,
+            #connect-wallet-button, #buy-memepi-button {
+                width: 100%;
+                min-width: unset;
+                flex-grow: 0;
+            }
             #main-chat-layout {
                 flex-direction: column;
             }
             #sidebar {
-                width: 100%; /* Sidebar takes full width */
-                border-right: none; /* Remove right border */
-                border-bottom: 1px solid var(--border-color); /* Add bottom border */
-                flex-direction: row; /* Layout rooms and users horizontally in sidebar */
-                justify-content: space-around;
-                flex-wrap: wrap; /* Allow room/user lists to wrap */
-                padding: 10px; /* Adjust sidebar padding */
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                flex-direction: column; /* Keep vertical for easier scrolling on mobile */
+                padding: 15px;
+                gap: 15px;
             }
-            #room-selection, #online-users {
-                flex: 1; /* Allow these sections to grow/shrink */
-                min-width: 150px; /* Minimum width for each section */
-                margin-bottom: 10px; /* Add some spacing between sections */
+            #room-selection, #online-users, #moderator-controls {
+                flex: none; /* No flex grow */
+                width: 100%;
+                margin-bottom: 0;
             }
             #room-list, #user-list {
-                display: flex; /* Make lists horizontal */
-                flex-wrap: wrap; /* Allow list items to wrap */
-                gap: 5px 10px; /* Spacing between list items */
-                margin-bottom: 0; /* Remove bottom margin from room-list */
+                display: block; /* Stack list items vertically */
+                margin-top: 10px;
             }
-            #room-list li, #user-list li {
-                padding: 5px; /* Smaller padding for list items */
-                border-left: none !important; /* Remove left border */
-                border-bottom: 3px solid transparent; /* Use bottom border for active room */
+            #room-list li {
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: 5px;
+                transform: translateX(0) !important; /* Disable hover slide on mobile */
             }
             #room-list li.active {
-                border-bottom: 3px solid var(--memepi-purple) !important;
-                padding-bottom: 2px !important; /* Adjust padding for bottom border */
+                border-left: none;
+                border-bottom: 3px solid var(--primary-purple);
+                padding-bottom: 7px;
+                border-radius: 0;
             }
             #create-room-button {
-                width: 100%; /* Full width button */
+                width: 100%;
+                margin-top: 10px;
             }
+            #moderator-controls hr { margin: 10px 0; }
+            #moderator-controls h3 { margin-bottom: 10px; }
+            #manage-moderators-button { width: 100%; }
 
-            /* Authentication and Wallet sections: stack inputs/buttons vertically */
-            #auth-section {
-                flex-direction: column;
-                align-items: stretch; /* Stretch items to full width */
+            #chat-area {
+                padding: 0; /* Remove padding from chat-area itself */
             }
-            #auth-status {
-                margin-left: 0; /* Remove auto margin */
-                text-align: center; /* Center text */
+            #messages {
+                padding: 15px; /* Padding for messages div */
             }
-            #auth-section button, #auth-section input {
-                width: 100%; /* Full width for inputs and buttons */
+            .message {
+                max-width: 98%; /* Allow messages to take more width */
+                padding: 10px 15px;
+                margin-bottom: 8px;
             }
-            #wallet-section {
-                flex-direction: column; /* Stack wallet info and buttons vertically */
-                align-items: stretch;
-            }
-            #wallet-info {
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            #connect-wallet-button, #buy-memepi-button {
-                width: 100%; /* Full width for wallet buttons */
-            }
-            #ai-bot-toggle-section {
-                justify-content: center; /* Center the toggle on mobile */
-            }
-            
-            /* Message input area adjustments */
             #input-area {
-                padding: 10px; /* Smaller padding */
+                padding: 15px;
             }
             #message-input {
-                margin-right: 5px; /* Smaller margin to send button */
+                padding: 12px;
+                margin-right: 8px;
             }
             #send-button {
-                padding: 10px 15px; /* Smaller send button */
+                padding: 12px 18px;
+            }
+            .modal-content {
+                padding: 20px;
+                max-width: 320px;
+            }
+            .modal-content h3 {
+                font-size: 1.3em;
+                margin-bottom: 20px;
+            }
+            .modal-content input {
+                width: calc(100% - 20px);
+                padding: 10px;
+            }
+            .modal-content button {
+                padding: 10px 15px;
+                margin: 5px;
             }
 
-            /* Message bubble maximum width */
-            .message {
-                max-width: 95%; /* Messages can take more width on small screens */
-            }
+            /* Hide decorative elements on small screens */
+            .abstract-element { display: none; }
         }
     </style>
 </head>
 <body>
     <header>
         <!-- Your Logo Image -->
-        <!-- IMPORTANT: Replace the src with the actual URL where you host your MemePi logo -->
         <img id="logo-img" src="images/memepi-logo.png" alt="MemePi Token Logo">
-        <h1>MemePi P2P Chat</h1>
+        <h1>Unleashing <span class="highlight">Creative</span> brilliance</h1>
+        <p class="subtitle-location">MemePi P2P Chat</p>
     </header>
+
+    <!-- Abstract Decorative Elements -->
+    <div class="abstract-element star-1">✨</div>
+    <div class="abstract-element star-2">🌟</div>
+    <div class="abstract-element squiggle">𝓒𝓱𝓪𝓽</div>
 
     <div id="app-container">
         <!-- Authentication Section -->
@@ -701,6 +805,7 @@
                         <!-- Online users will appear here -->
                     </ul>
                 </div>
+                <!-- Moderator controls will be appended here by JS -->
             </div>
 
             <!-- Main Chat Area -->
@@ -743,7 +848,6 @@
 
 
     <!-- Include Ethers.js (before your main script) -->
-    <!-- UPDATED: Switched from cdn.ethers.io to cdn.jsdelivr.net for better compatibility -->
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="application/javascript"></script>
 
     <!-- Include Gun.js and SEA library -->
@@ -772,9 +876,14 @@
         const OPTIMISM_CHAIN_ID_UNISWAP = 'optimism'; // Uniswap app uses 'optimism' string for chain ID
         const NATIVE_ETH_UNISWAP_KEYWORD = 'ETH'; // Uniswap app uses 'ETH' for native Ether
 
-        // Room Inactivity Timeout (24 hours in milliseconds)
+        // Room Inactivity Timeout (24 hours in milliseconds) - For flagging, not automatic deletion
         const ROOM_INACTIVITY_TIMEOUT_MS = 24 * 60 * 60 * 1000;
         const DEFAULT_ROOMS = ['general', 'memepi_dev', 'random']; // Rooms that are always present
+
+        // --- SUPER ADMIN CONFIGURATION ---
+        // IMPORTANT: REPLACE THIS WITH YOUR OWN GUN.JS PUBLIC KEY
+        // To get your public key: Log in to your Gun.js account in the app, open console (F12), type `gun.user().is.pub` and copy the output.
+        const SUPER_ADMIN_PUB_KEY = 'YOUR_GUN_JS_PUBLIC_KEY_HERE'; 
 
         // --- Gun.js Initialization ---
         const gun = Gun({
@@ -808,6 +917,16 @@
         const sendButton = document.getElementById('send-button');
         const messagesDiv = document.getElementById('messages');
 
+        // New Moderator UI elements
+        const moderatorControlsDiv = document.createElement('div'); // Create a div for moderator controls
+        moderatorControlsDiv.id = 'moderator-controls';
+        moderatorControlsDiv.innerHTML = `
+            <hr style="border-color: var(--border-light); margin: 15px 0;">
+            <h3>Moderator Tools</h3>
+            <button id="manage-moderators-button" style="display: none; width: calc(100% - 10px); padding: 10px; background-color: var(--primary-purple); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95em; transition: background-color 0.2s ease, transform 0.1s ease;">Manage Moderators</button>
+        `;
+        document.getElementById('sidebar').appendChild(moderatorControlsDiv); // Append to sidebar
+
         // Modals
         const tipModal = document.getElementById('tipModal');
         const tipRecipientAliasSpan = document.getElementById('tipRecipientAlias');
@@ -822,8 +941,38 @@
         const confirmCreateRoomButton = document.getElementById('confirmCreateRoomButton');
         const cancelCreateRoomButton = document.getElementById('cancelCreateRoomButton');
 
+        // New Moderator Management Modal
+        const manageModeratorsModal = document.createElement('div');
+        manageModeratorsModal.id = 'manageModeratorsModal';
+        manageModeratorsModal.classList.add('modal');
+        manageModeratorsModal.innerHTML = `
+            <div class="modal-content">
+                <h3>Manage Chat Moderators</h3>
+                <input type="text" id="modAliasInput" placeholder="Enter user's alias">
+                <div class="modal-message" id="modMessage"></div>
+                <button class="confirm-button" id="addModButton">Add Moderator</button>
+                <button class="cancel-button" id="removeModButton">Remove Moderator</button>
+                <button class="cancel-button" id="closeModModalButton">Close</button>
+                <hr>
+                <h4>Current Moderators:</h4>
+                <ul id="currentModsList" style="list-style: none; padding: 0; text-align: left;"></ul>
+            </div>
+        `;
+        document.body.appendChild(manageModeratorsModal);
+
+        // References for new moderator modal
+        const manageModeratorsButton = document.getElementById('manage-moderators-button');
+        const modAliasInput = document.getElementById('modAliasInput');
+        const modMessage = document.getElementById('modMessage');
+        const addModButton = document.getElementById('addModButton');
+        const removeModButton = document.getElementById('removeModButton');
+        const closeModModalButton = document.getElementById('closeModModalButton');
+        const currentModsList = document.getElementById('currentModsList');
+
+
         // --- Global State Variables ---
         let currentUserAlias = null;
+        let currentUserPub = null; // Store current user's public key
         let currentRoomName = 'general';
         let chatRoomRef = null;
         let messageListener = null;
@@ -846,7 +995,7 @@
         const onlineUsersMap = new Map();
         const typingUsersMap = new Map();
         const allRoomsMap = new Map();
-
+        const moderatorsMap = new Map(); // Map to store moderator public keys
 
         // --- Gun.js User Object ---
         const user = gun.user();
@@ -856,11 +1005,31 @@
         const aiBotPassword = 'memepi-secret-bot-password-123';
         const aiBotUser = gun.user();
 
+        // --- Helper Functions ---
+        function isSuperAdmin() {
+            return currentUserPub === SUPER_ADMIN_PUB_KEY;
+        }
+
+        function isModerator() {
+            return isSuperAdmin() || moderatorsMap.has(currentUserPub);
+        }
+
+        function renderModeratorControls() {
+            if (isSuperAdmin()) {
+                moderatorControlsDiv.style.display = 'block'; // Show the entire section
+                manageModeratorsButton.style.display = 'block';
+            } else {
+                moderatorControlsDiv.style.display = 'none'; // Hide the entire section
+                manageModeratorsButton.style.display = 'none';
+            }
+        }
+
         // --- UI Update Functions ---
 
         function updateLoginStatus(alias) {
             currentUserAlias = alias;
-            console.log('updateLoginStatus called. Alias:', alias, 'currentUserAlias (global):', currentUserAlias); // DEBUG
+            currentUserPub = user.is && user.is.pub ? user.is.pub : null; // Get public key
+            console.log('updateLoginStatus called. Alias:', alias, 'currentUserAlias (global):', currentUserAlias, 'currentUserPub:', currentUserPub); // DEBUG
             if (alias) {
                 authStatusSpan.textContent = `Logged In: ${alias}`;
                 messageInput.disabled = false;
@@ -885,7 +1054,9 @@
                     user.get('status').put('offline');
                 }
                 currentUserAlias = null;
+                currentUserPub = null;
             }
+            renderModeratorControls(); // Update visibility of moderator button
         }
 
         function appendMessageElement(msg) {
@@ -1223,7 +1394,7 @@
         gun.on('auth', async function() {
             const alias = await user.get('alias').then();
             updateLoginStatus(alias);
-            console.log('Gun.js: User authenticated:', alias, 'currentUserAlias (global):', currentUserAlias); // DEBUG
+            console.log('Gun.js: User authenticated:', alias, 'currentUserAlias (global):', currentUserAlias, 'currentUserPub:', currentUserPub); // DEBUG
         });
 
         // This attempts to recall previous session. It's crucial for Gun.js user state.
@@ -1257,6 +1428,8 @@
             user.auth(username, password, function(ack) {
                 if (ack.err) { alert('Login Error: ' + ack.err); console.error('Auth: Login Error:', ack.err); } // DEBUG
                 else { alert('Logged in successfully!'); console.log('Auth: Logged in:', ack); } // DEBUG
+                // Re-evaluate moderator controls after login
+                renderModeratorControls();
             });
         });
 
@@ -1622,6 +1795,7 @@
             const roomData = {
                 name: newRoomName,
                 creator: currentUserAlias,
+                creatorPub: currentUserPub, // Store creator's public key (for metadata, not deletion rights)
                 createdAt: Date.now(),
                 lastActivity: Date.now(),
                 status: 'active'
@@ -1642,7 +1816,7 @@
         }
 
 
-        // --- Room Inactivity Logic ---
+        // --- Room Inactivity Logic & Moderator Deletion ---
 
         gun.get('memepi_all_rooms').map().on(function(roomData, roomName) {
             if (roomData && roomName) {
@@ -1680,6 +1854,7 @@
                 roomsToRender.set(roomName, {
                     name: roomName,
                     creator: 'System',
+                    creatorPub: 'system_pub_key', // Placeholder for system rooms
                     createdAt: 0,
                     lastActivity: Infinity,
                     status: 'active'
@@ -1718,24 +1893,48 @@
                     }
                 }
 
+                // Flag inactive rooms visually, but don't auto-delete
                 if (room.status === 'active' && room.lastActivity !== Infinity && (Date.now() - room.lastActivity) > ROOM_INACTIVITY_TIMEOUT_MS) {
                     li.classList.add('inactive-room');
-                    li.title = `Inactive for >${ROOM_INACTIVITY_TIMEOUT_MS / (60 * 60 * 1000)}h. Click to remove.`;
-                    console.log(`Room #${room.name} detected as inactive. Attempting to remove.`); // DEBUG
-                    deleteRoom(room.name);
+                    li.title = `Inactive for >${ROOM_INACTIVITY_TIMEOUT_MS / (60 * 60 * 1000)}h. Moderator can remove.`;
                 } else if (room.status === 'inactive') {
                      li.classList.add('inactive-room');
                      li.title = `Room #${room.name} is being deleted due to inactivity.`;
                 }
 
-                li.addEventListener('click', async () => {
-                    if (li.classList.contains('inactive-room')) {
-                        const confirmDelete = confirm(`Room #${room.name} has been inactive for over ${ROOM_INACTIVITY_TIMEOUT_MS / (60 * 60 * 1000)} hours. Do you want to remove it from the list for everyone? This action is irreversible.`);
+                // Moderator Delete Icon
+                if (isModerator()) { // Only show delete icon if current user is a moderator
+                    const deleteIcon = document.createElement('span');
+                    deleteIcon.textContent = ' 🗑️'; // Trash can emoji
+                    deleteIcon.style.cursor = 'pointer';
+                    deleteIcon.style.marginLeft = 'auto'; // Push it to the right
+                    deleteIcon.title = `Moderator: Click to remove room #${room.name}`;
+                    deleteIcon.classList.add('moderator-delete-room');
+
+                    deleteIcon.addEventListener('click', async (event) => {
+                        event.stopPropagation(); // Prevent the li's click event from firing
+                        const confirmDelete = confirm(`As a moderator, do you want to remove room #${room.name} from the public list? This action is irreversible for public visibility.`);
                         if (confirmDelete) {
                             deleteRoom(room.name);
                         }
-                    } else {
+                    });
+                    li.appendChild(deleteIcon);
+                }
+
+                li.addEventListener('click', async () => {
+                    // Allow switching to active rooms
+                    if (!li.classList.contains('inactive-room') || room.status === 'active') {
                         await switchRoom(room.name);
+                    } else {
+                        // If it's an inactive room, only moderators can initiate removal
+                        if (isModerator()) {
+                            const confirmDelete = confirm(`Room #${room.name} is inactive. As a moderator, do you want to remove it from the list for everyone?`);
+                            if (confirmDelete) {
+                                deleteRoom(room.name);
+                            }
+                        } else {
+                            alert(`Room #${room.name} is inactive and can only be removed by a moderator.`);
+                        }
                     }
                 });
                 roomList.appendChild(li);
@@ -1743,25 +1942,170 @@
             evaluateRoomAccess();
         }
 
+        // Modified deleteRoom: only moderators can delete
         function deleteRoom(roomName) {
-            if (DEFAULT_ROOMS.includes(roomName)) {
-                console.warn(`Attempted to delete default room #${roomName}. Aborting.`); // DEBUG
+            if (!isModerator()) {
+                alert("You are not authorized to delete rooms.");
+                console.warn(`Unauthorized attempt to delete room #${roomName} by ${currentUserAlias}.`);
                 return;
             }
-            console.log(`Initiating deletion for room #${roomName}.`); // DEBUG
+
+            if (DEFAULT_ROOMS.includes(roomName)) {
+                console.warn(`Moderator attempted to delete default room #${roomName}. Aborting.`);
+                alert(`Default room #${roomName} cannot be deleted.`); // User feedback
+                return;
+            }
+
+            console.log(`Moderator (${currentUserAlias}) initiating deletion for room #${roomName}.`);
+
+            // Proceed with marking inactive and nullifying
             gun.get('memepi_all_rooms').get(roomName).get('status').put('inactive', (ack) => {
-                 if (ack.err) { console.error(`Error marking room #${roomName} inactive:`, ack.err); return; } // DEBUG
-                 console.log(`Room #${roomName} marked inactive. Now attempting to nullify.`); // DEBUG
+                 if (ack.err) { console.error(`Error marking room #${roomName} inactive:`, ack.err); return; }
+                 console.log(`Room #${roomName} marked inactive. Now attempting to nullify.`);
                  gun.get('memepi_all_rooms').get(roomName).put(null, (ack2) => {
                      if (ack2.err) {
-                         console.error(`Error deleting room #${roomName}:`, ack2.err); // DEBUG
+                         console.error(`Error deleting room #${roomName}:`, ack2.err);
                      } else {
-                         console.log(`Room #${roomName} successfully deleted.`); // DEBUG
+                         console.log(`Room #${roomName} successfully deleted.`);
                          if (currentRoomName === roomName) {
                              switchRoom('general');
                          }
                      }
                  });
+            });
+        }
+
+        // --- Moderator Management Logic ---
+        gun.get('memepi_global_moderators').map().on(function(isMod, pubKey) {
+            if (isMod === true) {
+                moderatorsMap.set(pubKey, true);
+            } else if (isMod === null) {
+                moderatorsMap.delete(pubKey);
+            }
+            renderCurrentModsList();
+            renderRoomList(); // Re-render room list to update delete icons
+        });
+
+        function renderCurrentModsList() {
+            currentModsList.innerHTML = '';
+            // Display super admin first
+            const superAdminLi = document.createElement('li');
+            superAdminLi.textContent = `(Super Admin) ${SUPER_ADMIN_PUB_KEY.substring(0, 10)}...`;
+            superAdminLi.style.fontWeight = 'bold';
+            superAdminLi.style.color = 'var(--primary-purple)';
+            currentModsList.appendChild(superAdminLi);
+
+            moderatorsMap.forEach((_, pubKey) => {
+                if (pubKey !== SUPER_ADMIN_PUB_KEY) { // Don't list super admin again
+                    const li = document.createElement('li');
+                    // Fetch alias for display, if available
+                    gun.get('~').get(pubKey).get('alias').once(alias => {
+                        li.textContent = `${alias || pubKey.substring(0, 10) + '...'}` + (alias ? '' : ' (PubKey)');
+                    });
+                    currentModsList.appendChild(li);
+                }
+            });
+            if (moderatorsMap.size === 0 && SUPER_ADMIN_PUB_KEY) { // If only super admin
+                const li = document.createElement('li');
+                li.textContent = "No additional moderators.";
+                currentModsList.appendChild(li);
+            }
+        }
+
+        async function addModerator() {
+            if (!isSuperAdmin()) {
+                modMessage.textContent = 'Only the Super Admin can add moderators.';
+                modMessage.style.color = 'var(--error-red)';
+                return;
+            }
+
+            const alias = modAliasInput.value.trim();
+            if (!alias) {
+                modMessage.textContent = 'Please enter an alias.';
+                modMessage.style.color = 'var(--error-red)';
+                return;
+            }
+
+            modMessage.textContent = 'Fetching user public key...';
+            modMessage.style.color = 'var(--text-color)';
+
+            // Fetch user's public key by alias
+            const userRef = gun.get('~@' + alias);
+            userRef.get('pub').once(pubKey => {
+                if (pubKey) {
+                    if (pubKey === SUPER_ADMIN_PUB_KEY) {
+                        modMessage.textContent = 'You are already the Super Admin.';
+                        modMessage.style.color = 'var(--error-red)';
+                        return;
+                    }
+                    if (moderatorsMap.has(pubKey)) {
+                        modMessage.textContent = `${alias} is already a moderator.`;
+                        modMessage.style.color = 'var(--error-red)';
+                        return;
+                    }
+                    gun.get('memepi_global_moderators').get(pubKey).put(true, (ack) => {
+                        if (ack.err) {
+                            modMessage.textContent = `Error adding moderator: ${ack.err}`;
+                            modMessage.style.color = 'var(--error-red)';
+                            console.error('Add Moderator Error:', ack.err);
+                        } else {
+                            modMessage.textContent = `${alias} added as moderator!`;
+                            modMessage.style.color = 'var(--success-green)';
+                            modAliasInput.value = '';
+                        }
+                    });
+                } else {
+                    modMessage.textContent = `User '${alias}' not found or has no public key.`;
+                    modMessage.style.color = 'var(--error-red)';
+                }
+            });
+        }
+
+        async function removeModerator() {
+            if (!isSuperAdmin()) {
+                modMessage.textContent = 'Only the Super Admin can remove moderators.';
+                modMessage.style.color = 'var(--error-red)';
+                return;
+            }
+
+            const alias = modAliasInput.value.trim();
+            if (!alias) {
+                modMessage.textContent = 'Please enter an alias.';
+                modMessage.style.color = 'var(--error-red)';
+                return;
+            }
+
+            modMessage.textContent = 'Fetching user public key...';
+            modMessage.style.color = 'var(--text-color)';
+
+            const userRef = gun.get('~@' + alias);
+            userRef.get('pub').once(pubKey => {
+                if (pubKey) {
+                    if (pubKey === SUPER_ADMIN_PUB_KEY) {
+                        modMessage.textContent = 'Cannot remove Super Admin.';
+                        modMessage.style.color = 'var(--error-red)';
+                        return;
+                    }
+                    if (!moderatorsMap.has(pubKey)) {
+                        modMessage.textContent = `${alias} is not a moderator.`;
+                        modMessage.style.color = 'var(--error-red)';
+                        return;
+                    }
+                    gun.get('memepi_global_moderators').get(pubKey).put(null, (ack) => {
+                        if (ack.err) {
+                            modMessage.textContent = `Error removing moderator: ${ack.err}`;
+                            modMessage.style.color = 'var(--error-red)';
+                            console.error('Remove Moderator Error:', ack.err);
+                        } else {
+                            modMessage.textContent = `${alias} removed as moderator.`;
+                            modMessage.style.color = 'var(--success-green)';
+                            modAliasInput.value = '';
+                        }
+                    });
+                } else {
+                    modMessage.textContent = `User '${alias}' not found or has no public key.`;
+                    modMessage.style.color = 'var(--error-red)';
+                }
             });
         }
 
@@ -1771,6 +2115,20 @@
         confirmTipButton.addEventListener('click', sendTip);
         cancelCreateRoomButton.addEventListener('click', () => createRoomModal.style.display = 'none');
         confirmCreateRoomButton.addEventListener('click', createNewRoom);
+
+        manageModeratorsButton.addEventListener('click', () => {
+            if (isSuperAdmin()) {
+                manageModeratorsModal.style.display = 'flex';
+                renderCurrentModsList();
+                modAliasInput.value = '';
+                modMessage.textContent = '';
+            } else {
+                alert("You are not authorized to manage moderators.");
+            }
+        });
+        addModButton.addEventListener('click', addModerator);
+        removeModButton.addEventListener('click', removeModerator);
+        closeModModalButton.addEventListener('click', () => manageModeratorsModal.style.display = 'none');
 
 
         // --- Initialization ---
@@ -1784,6 +2142,7 @@
                     gun.get('memepi_all_rooms').get(roomName).put({
                         name: roomName,
                         creator: 'System',
+                        creatorPub: 'system_pub_key', // Placeholder for system rooms
                         createdAt: 0,
                         lastActivity: Infinity,
                         status: 'active'
