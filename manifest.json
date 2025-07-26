@@ -1,22 +1,23 @@
 {
-    "name": "MemePi Chat",
-    "short_name": "MemePiChat",
-    "description": "A decentralized P2P chat powered by Gun.js and MemePi!",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "background_color": "#F8F8F8",
-    "theme_color": "#A08CE5",
-    "icons": [
-        {
-            "src": "images/memepi-logo-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "images/memepi-logo-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "orientation": "portrait"
+  "name": "MemePi P2P Chat",
+  "short_name": "MemePi Chat",
+  "description": "A decentralized P2P chat application for the MemePi community.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F8F8F8",
+  "theme_color": "#A08CE5",
+  "icons": [
+    {
+      "src": "images/memepi-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/memepi-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "prefer_related_applications": false
 }
