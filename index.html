@@ -224,11 +224,26 @@
             border-color: var(--primary-purple);
             box-shadow: 0 0 0 4px rgba(var(--primary-purple), 0.2);
         }
-        #auth-section button {
+        #auth-section .auth-buttons {
+            display: flex;
+            gap: 10px;
+            flex-grow: 1; /* Allow buttons to expand */
+            min-width: 200px; /* Ensure buttons don't collapse too much */
+        }
+        #auth-section .auth-buttons button {
+            flex: 1; /* Distribute space evenly among buttons */
+        }
+        #signup-button, #login-button {
             background-color: var(--primary-purple);
             color: white;
         }
-        #auth-section button:hover { background-color: #5A3DBF; } /* Darker purple on hover */
+        #signup-button:hover, #login-button:hover { background-color: #5A3DBF; } /* Darker purple on hover */
+        #logout-button { /* New logout button style */
+            background-color: var(--error-red);
+            color: white;
+            display: none; /* Hidden by default */
+        }
+        #logout-button:hover { background-color: #da190b; }
         #auth-status {
             margin-left: auto;
             padding: 12px 18px;
@@ -565,7 +580,7 @@
         }
         #send-button:hover { background-color: #5A3DBF; }
 
-        /* --- Modals (for Tipping & Create Room) --- */
+        /* --- Modals (for Tipping & Create Room & Moderator Management) --- */
         .modal {
             display: none;
             position: fixed;
@@ -639,6 +654,25 @@
         #currentModsList li:first-child {
             margin-bottom: 10px;
         }
+        /* CAPTCHA specific styles */
+        #captcha-modal .modal-content {
+            max-width: 350px;
+            padding: 25px;
+        }
+        #captcha-challenge {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-purple);
+        }
+        #captcha-input {
+            text-align: center;
+        }
+        #captcha-message {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
 
         /* --- Responsive Adjustments --- */
         @media (max-width: 768px) {
@@ -664,6 +698,9 @@
                 width: 100%;
                 min-width: unset;
                 flex-grow: 0;
+            }
+            #auth-section .auth-buttons {
+                flex-direction: column; /* Stack auth buttons vertically */
             }
             #main-chat-layout {
                 flex-direction: column;
@@ -766,8 +803,11 @@
         <div id="auth-section">
             <input type="text" id="auth-username" placeholder="Username">
             <input type="password" id="auth-password" placeholder="Password">
-            <button id="signup-button">Sign Up</button>
-            <button id="login-button">Log In</button>
+            <div class="auth-buttons">
+                <button id="signup-button">Sign Up</button>
+                <button id="login-button">Log In</button>
+                <button id="logout-button">Log Out</button> <!-- NEW: Dedicated Logout Button -->
+            </div>
             <span id="auth-status">Not Logged In</span>
         </div>
 
@@ -846,6 +886,19 @@
         </div>
     </div>
 
+    <!-- CAPTCHA Modal (NEW) -->
+    <div id="captcha-modal" class="modal">
+        <div class="modal-content">
+            <h3>Security Check</h3>
+            <p>Please solve the CAPTCHA to proceed:</p>
+            <div id="captcha-challenge" style="font-family: 'Dancing Script', cursive; font-size: 2em; margin-bottom: 15px;"></div>
+            <input type="text" id="captcha-input" placeholder="Your answer">
+            <div class="modal-message" id="captcha-message"></div>
+            <button class="confirm-button" id="captcha-confirm-button">Verify</button>
+            <button class="cancel-button" id="captcha-cancel-button">Cancel</button>
+        </div>
+    </div>
+
 
     <!-- Include Ethers.js (before your main script) -->
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="application/javascript"></script>
@@ -900,6 +953,7 @@
         const authPasswordInput = document.getElementById('auth-password');
         const signupButton = document.getElementById('signup-button');
         const loginButton = document.getElementById('login-button');
+        const logoutButton = document.getElementById('logout-button'); // NEW: Logout button ref
         const authStatusSpan = document.getElementById('auth-status');
 
         const walletAddressSpan = document.getElementById('wallet-address');
@@ -969,6 +1023,13 @@
         const closeModModalButton = document.getElementById('closeModModalButton');
         const currentModsList = document.getElementById('currentModsList');
 
+        // CAPTCHA Modal references (NEW)
+        const captchaModal = document.getElementById('captcha-modal');
+        const captchaChallengeDiv = document.getElementById('captcha-challenge');
+        const captchaInput = document.getElementById('captcha-input');
+        const captchaMessageDiv = document.getElementById('captcha-message');
+        const captchaConfirmButton = document.getElementById('captcha-confirm-button');
+        const captchaCancelButton = document.getElementById('captcha-cancel-button');
 
         // --- Global State Variables ---
         let currentUserAlias = null;
@@ -996,6 +1057,10 @@
         const typingUsersMap = new Map();
         const allRoomsMap = new Map();
         const moderatorsMap = new Map(); // Map to store moderator public keys
+
+        // --- CAPTCHA State ---
+        let correctCaptchaAnswer = 0;
+        let captchaCallback = null; // Function to call after successful CAPTCHA
 
         // --- Gun.js User Object ---
         const user = gun.user();
@@ -1038,8 +1103,9 @@
                 authPasswordInput.value = '';
                 authUsernameInput.disabled = true;
                 authPasswordInput.disabled = true;
-                signupButton.disabled = true;
-                loginButton.textContent = 'Log Out';
+                signupButton.style.display = 'none'; // Hide signup
+                loginButton.style.display = 'none'; // Hide login
+                logoutButton.style.display = 'block'; // Show logout
                 user.get('status').put('online');
                 requestNotificationPermission();
             } else {
@@ -1048,8 +1114,9 @@
                 sendButton.disabled = true;
                 authUsernameInput.disabled = false;
                 authPasswordInput.disabled = false;
-                signupButton.disabled = false;
-                loginButton.textContent = 'Log In';
+                signupButton.style.display = 'block'; // Show signup
+                loginButton.style.display = 'block'; // Show login
+                logoutButton.style.display = 'none'; // Hide logout
                 if (currentUserAlias) { // Only set offline if they were previously logged in
                     user.get('status').put('offline');
                 }
@@ -1395,6 +1462,10 @@
             const alias = await user.get('alias').then();
             updateLoginStatus(alias);
             console.log('Gun.js: User authenticated:', alias, 'currentUserAlias (global):', currentUserAlias, 'currentUserPub:', currentUserPub); // DEBUG
+            // Ensure room is set up after authentication
+            if (alias) {
+                switchRoom(currentRoomName); // Re-switch to current room or default
+            }
         });
 
         // This attempts to recall previous session. It's crucial for Gun.js user state.
@@ -1402,36 +1473,45 @@
         console.log('Gun.js: User recall initiated.'); // DEBUG
 
         signupButton.addEventListener('click', function() {
-            const username = authUsernameInput.value.trim();
-            const password = authPasswordInput.value.trim();
-            if (!username || !password) { alert('Please enter both username and password to sign up.'); return; }
-            console.log('Auth: Attempting to create user:', username); // DEBUG
-            user.create(username, password, function(ack) {
-                if (ack.err) { alert('Sign Up Error: ' + ack.err); console.error('Auth: Sign Up Error:', ack.err); } // DEBUG
-                else { alert('Account created successfully! You are now logged in.'); console.log('Auth: Account created:', ack); } // DEBUG
-            });
+            captchaCallback = () => { // Define callback for successful CAPTCHA
+                const username = authUsernameInput.value.trim();
+                const password = authPasswordInput.value.trim();
+                if (!username || !password) { alert('Please enter both username and password to sign up.'); return; }
+                console.log('Auth: Attempting to create user:', username); // DEBUG
+                user.create(username, password, function(ack) {
+                    if (ack.err) { alert('Sign Up Error: ' + ack.err); console.error('Auth: Sign Up Error:', ack.err); } // DEBUG
+                    else { alert('Account created successfully! You are now logged in.'); console.log('Auth: Account created:', ack); } // DEBUG
+                });
+            };
+            showCaptcha();
         });
 
         loginButton.addEventListener('click', function() {
+            captchaCallback = () => { // Define callback for successful CAPTCHA
+                const username = authUsernameInput.value.trim();
+                const password = authPasswordInput.value.trim();
+                if (!username || !password) { alert('Please enter both username and password to log in.'); return; }
+                console.log('Auth: Attempting to log in user:', username); // DEBUG
+                user.auth(username, password, function(ack) {
+                    if (ack.err) { alert('Login Error: ' + ack.err); console.error('Auth: Login Error:', ack.err); } // DEBUG
+                    else { alert('Logged in successfully!'); console.log('Auth: Logged in:', ack); } // DEBUG
+                    renderModeratorControls(); // Re-evaluate moderator controls after login
+                });
+            };
+            showCaptcha();
+        });
+
+        // NEW: Logout Button Listener
+        logoutButton.addEventListener('click', function() {
             if (user.is) {
                 console.log('Auth: Attempting to log out user:', currentUserAlias); // DEBUG
                 user.leave();
                 updateLoginStatus(null);
                 alert('Logged out successfully.');
                 console.log('Auth: Logged out.'); // DEBUG
-                return;
             }
-            const username = authUsernameInput.value.trim();
-            const password = authPasswordInput.value.trim();
-            if (!username || !password) { alert('Please enter both username and password to log in.'); return; }
-            console.log('Auth: Attempting to log in user:', username); // DEBUG
-            user.auth(username, password, function(ack) {
-                if (ack.err) { alert('Login Error: ' + ack.err); console.error('Auth: Login Error:', ack.err); } // DEBUG
-                else { alert('Logged in successfully!'); console.log('Auth: Logged in:', ack); } // DEBUG
-                // Re-evaluate moderator controls after login
-                renderModeratorControls();
-            });
         });
+
 
         connectWalletButton.addEventListener('click', connectWallet);
         buyMemepiButton.addEventListener('click', buyMemepi);
@@ -2109,6 +2189,38 @@
             });
         }
 
+        // --- CAPTCHA Logic (NEW) ---
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            correctCaptchaAnswer = num1 + num2;
+            captchaChallengeDiv.textContent = `${num1} + ${num2} = ?`;
+            captchaInput.value = '';
+            captchaMessageDiv.textContent = '';
+            captchaModal.style.display = 'flex';
+            captchaInput.focus();
+        }
+
+        function verifyCaptcha() {
+            const userAnswer = parseInt(captchaInput.value, 10);
+            if (userAnswer === correctCaptchaAnswer) {
+                captchaModal.style.display = 'none';
+                if (captchaCallback) {
+                    captchaCallback(); // Execute the original login/signup action
+                }
+            } else {
+                captchaMessageDiv.textContent = 'Incorrect answer. Please try again.';
+                captchaMessageDiv.style.color = 'var(--error-red)';
+                captchaInput.value = '';
+                captchaInput.focus();
+                generateCaptcha(); // Generate new CAPTCHA on failure
+            }
+        }
+
+        function showCaptcha() {
+            generateCaptcha();
+            captchaModal.style.display = 'flex';
+        }
 
         // --- Modals Event Listeners ---
         cancelTipButton.addEventListener('click', () => tipModal.style.display = 'none');
@@ -2129,6 +2241,18 @@
         addModButton.addEventListener('click', addModerator);
         removeModButton.addEventListener('click', removeModerator);
         closeModModalButton.addEventListener('click', () => manageModeratorsModal.style.display = 'none');
+
+        // CAPTCHA Modal Listeners (NEW)
+        captchaConfirmButton.addEventListener('click', verifyCaptcha);
+        captchaCancelButton.addEventListener('click', () => {
+            captchaModal.style.display = 'none';
+            captchaCallback = null; // Clear callback
+        });
+        captchaInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                verifyCaptcha();
+            }
+        });
 
 
         // --- Initialization ---
@@ -2151,11 +2275,25 @@
             });
         });
 
-        // Initial room switch - Ensure this is called to set up chatRoomRef
-        console.log("Initiating initial room switch to:", currentRoomName); // DEBUG
-        switchRoom(currentRoomName);
+        // Initialize UI status based on current user state
+        // This ensures updateLoginStatus and switchRoom are called AFTER Gun.js user recall/auth is processed
+        gun.on('auth', async function() {
+            const alias = await user.get('alias').then();
+            updateLoginStatus(alias);
+            console.log('Gun.js: User authenticated:', alias, 'currentUserAlias (global):', currentUserAlias, 'currentUserPub:', currentUserPub);
+            // After successful login/recall, switch to the current room (or default)
+            switchRoom(currentRoomName);
+        });
 
-        messagesDiv.innerHTML = '<div class="message" style="text-align: center; font-style: italic;">Welcome! Please sign up or log in to chat.</div>';
+        // If user is already logged in from previous session, recall their state
+        user.recall({ sessionStorage: true });
+        console.log('Gun.js: User recall initiated.');
+
+        // Initial display for users not yet logged in or recalled
+        if (!user.is) {
+            messagesDiv.innerHTML = '<div class="message" style="text-align: center; font-style: italic;">Welcome! Please sign up or log in to chat.</div>';
+            updateLoginStatus(null); // Set initial UI for not logged in
+        }
 
         // Initial check for wallet connection on load
         if (typeof window.ethereum !== 'undefined') {
